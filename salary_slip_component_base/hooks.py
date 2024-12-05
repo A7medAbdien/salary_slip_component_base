@@ -145,6 +145,12 @@ app_license = "mit"
 # 	}
 # }
 
+doc_events = {
+    "Salary Slip": {
+        "on_update": "salary_slip_component_base.events.on_update",
+    }
+}
+
 # Scheduled Tasks
 # ---------------
 
@@ -241,4 +247,3 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
