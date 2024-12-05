@@ -1,8 +1,7 @@
 import frappe
 
+
 def on_update(doc, event):
-    print("\n\n\n Salary Slip Updated")
-    print(f"\n\n\n SS earnings: {doc.name}")
     salary_details = frappe.db.get_all(
         "Salary Detail",
         filters={"parent": doc.name},
@@ -26,7 +25,6 @@ def on_update(doc, event):
             sd.custom_component_base = salary_component.custom_component_base
 
         amount = sd.custom_component_base_rate * sd.custom_component_base
-        print(f"\n\n amount {amount}")
         frappe.db.set_value("Salary Detail", sd.name,
                             "custom_component_base_rate", sd.custom_component_base_rate)
         frappe.db.set_value("Salary Detail", sd.name,
