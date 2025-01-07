@@ -5,6 +5,10 @@ app_description = "An extention for the Payroll Salary Slips to allow a base com
 app_email = "ahmed.g.abdien@gmail.com"
 app_license = "mit"
 
+from hrms.payroll.doctype.salary_slip.salary_slip import SalarySlip
+import salary_slip_component_base.overrides.salary_slip
+SalarySlip.set_time_sheet = salary_slip_component_base.overrides.salary_slip.custom_set_time_sheet
+
 # Apps
 # ------------------
 
@@ -47,6 +51,7 @@ app_license = "mit"
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
+doctype_js = {"Salary Slip": "public/js/salary_slip.js"}
 
 # Svg Icons
 # ------------------
@@ -128,10 +133,9 @@ app_license = "mit"
 # DocType Class
 # ---------------
 # Override standard doctype classes
-
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+    # 	"ToDo": "custom_app.overrides.CustomToDo"
+}
 
 # Document Events
 # ---------------
