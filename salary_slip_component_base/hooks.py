@@ -151,8 +151,11 @@ override_doctype_class = {
 
 doc_events = {
     "Salary Slip": {
-        "on_update": "salary_slip_component_base.events.on_update",
-    }
+        "on_update": "salary_slip_component_base.events.salary_slip.on_update",
+    },
+    "Employee": {
+        "on_update": "salary_slip_component_base.events.employee.on_update",
+    },
 }
 
 # Scheduled Tasks
