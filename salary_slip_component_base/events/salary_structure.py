@@ -35,12 +35,11 @@ def on_submit_custom_employee_grade(doc, event):
     # Step 2: Check if the Employee Grade has a default salary structure
     if employee_grade.default_salary_structure:
         # Step 3: Raise an error with a link to the Employee Grade
-        frappe.throw(
-            f"Employee Grade \
+        frappe.throw(f"Employee Grade \
             <a href='{employee_grade_link}'>{employee_grade.name}</a> \
             has a default salary structure \
             <a href='{salary_structure_link}'>{
-                doc.name}</a> \
+            doc.name}</a> \
             and cannot be selected.",
             title="Invalid Employee Grade",
         )
