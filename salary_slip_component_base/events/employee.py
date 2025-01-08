@@ -21,14 +21,17 @@ def on_update(doc, event):
     # Step 1: Get salary structure based on employee grade
     employee_grade = frappe.get_doc("Employee Grade", doc.grade)
     if not employee_grade:
-        frappe.throw(f"No Employee grade found consider crateing an Employee Grade")
+        frappe.throw(
+            "No Employee grade found consider crateing an Employee Grade")
     new_salary_structure = employee_grade.default_salary_structure
     if not new_salary_structure:
-        frappe.throw(f"No defaulr salary structure found for grade {doc.grade}")
+        frappe.throw(
+            f"No defaulr salary structure found for grade {doc.grade}")
     print(f"\n\n\n new_salary_structure: {new_salary_structure} \n\n\n")
 
     # Step 2: Get current salary structure assignment
-    current_assignment = frappe.get_doc("Salary Structure Assignment", {"employee": doc.name, "docstatus": 1})
+    current_assignment = frappe.get_doc("Salary Structure Assignment", {
+                                        "employee": doc.name, "docstatus": 1})
     print(f"\n\n\n current_assignment: {current_assignment} \n\n\n")
 
     # Step 3: Check if salary structure is different

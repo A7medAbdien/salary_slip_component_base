@@ -156,6 +156,10 @@ doc_events = {
     "Employee": {
         "on_update": "salary_slip_component_base.events.employee.on_update",
     },
+    "Salary Structure": {
+        "on_submit": "salary_slip_component_base.events.salary_structure.on_submit",
+        "on_cancel": "salary_slip_component_base.events.salary_structure.on_cancel",
+    },
 }
 
 # Scheduled Tasks
