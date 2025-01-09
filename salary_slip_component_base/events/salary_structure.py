@@ -23,8 +23,7 @@ def on_submit_custom_employee_grade(doc, event):
     # Step 1: Retrieve the Employee Grade
     if not doc.custom_employee_grade:
         frappe.throw("Please select an Employee Grade.")
-    employee_grade = frappe.get_doc(
-        "Employee Grade", doc.custom_employee_grade)
+    employee_grade = frappe.get_doc("Employee Grade", doc.custom_employee_grade)
 
     # prepare links
     employee_grade_link = "<a herf='{0}'>{1}</a>".format(
@@ -32,16 +31,15 @@ def on_submit_custom_employee_grade(doc, event):
         employee_grade.name
     )
     salary_structure_link = "<a herf='{0}'>{1}</a>".format(
-        frappe.utils.get_url_to_form("Salary Structure", doc.name),
-        doc.name
+        frappe.utils.get_url_to_form("Salary Structure", employee_grade.default_salary_structure),
+        employee_grade.default_salary_structure
     )
 
     # Step 2: Check if the Employee Grade has a default salary structure
     if employee_grade.default_salary_structure:
         # Step 3: Raise an error with a link to the Employee Grade
         frappe.throw(
-            msg="Employee Grade {0} has a default salary \
-            structure {1} and cannot be selected.".format(
+            msg="Employee Grade {0} has a default salary structure {1}.".format(
                 employee_grade_link,
                 salary_structure_link
             ),
@@ -52,10 +50,8 @@ def on_submit_custom_employee_grade(doc, event):
         employee_grade.default_salary_structure = doc.name
         employee_grade.save()
         frappe.msgprint(
-            msg="The default salary structure of {0} \
-            has been changed to Employee Grade: {1}".format(
+            msg="The default salary structure of {0} has been changed.".format(
                 employee_grade_link,
-                salary_structure_link
             ),
             title="Action Completed",
         )
@@ -81,8 +77,7 @@ def on_cancel_custom_employee_grade(doc, event):
         frappe.db.set_value("Employee Grade", employee_grade,
                             "default_salary_structure", None)
         frappe.msgprint(
-            msg="The default salary structure of \
-            {0} now empty".format(
+            msg="The default salary structure of {0} now empty".format(
                 frappe.utils.get_url_to_form('Employee Grade', employee_grade)
             ),
             title="Action Completed",
