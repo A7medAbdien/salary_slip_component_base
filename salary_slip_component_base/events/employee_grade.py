@@ -12,8 +12,10 @@ def on_update(doc, event):
         return
     doc._on_update_handled = True
 
-    salary_structure_link = frappe.utils.get_link_to_form(
-        "Salary Structure", doc.default_salary_structure
+    salary_structure_link = "<a href='{0}'>{1}</a>".format(
+        frappe.utils.get_link_to_form(
+            "Salary Structure", doc.default_salary_structure),
+        doc.default_salary_structure
     )
     # Step 1: Check if the Default Salary Structure is canceled
     if doc.default_salary_structure:
@@ -27,19 +29,21 @@ def on_update(doc, event):
             canceled and cannot be assigned.".format(salary_structure_link))
 
         # Step 2: Check if it is assigned to another Employee Grade
-        # assigned_employee_grade = frappe.db.get_value(
-        #     "Salary Structure",
-        #     doc.default_salary_structure,
-        #     "custom_employee_grade"
-        # )
-        # # if not assigned_employee_grade:
-        # #    frappe.throw(f"The Default Salary Structure {
-        # #                salary_structure_link} is not assigned to any Employee Grade.")
-        # employee_grade_link = frappe.utils.get_link_to_form(
-        #     "Employee Grade", assigned_employee_grade
-        # )
-        # if assigned_employee_grade and assigned_employee_grade != doc.name:
-        #     frappe.throw(
-        #         f"The Default Salary Structure {
-        #             salary_structure_link} is already assigned to Employee Grade {employee_grade_link}."
-        #     )
+        assigned_employee_grade = frappe.db.get_value(
+            "Salary Structure",
+            doc.default_salary_structure,
+            "custom_employee_grade"
+        )
+        # if not assigned_employee_grade:
+        #    frappe.throw(f"The Default Salary Structure {
+        #                salary_structure_link} is not assigned to any Employee Grade.")
+        employee_grade_link = "<a herf='{0}'>{1}</a>".format(
+            frappe.utils.get_link_to_form(
+                "Employee Grade", assigned_employee_grade),
+            assigned_employee_grade
+        )
+        if assigned_employee_grade and assigned_employee_grade != doc.name:
+            frappe.throw(
+                f"The Default Salary Structure {
+                    salary_structure_link} is already assigned to Employee Grade {employee_grade_link}."
+            )

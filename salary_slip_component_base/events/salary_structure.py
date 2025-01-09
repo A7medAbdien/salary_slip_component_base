@@ -27,10 +27,14 @@ def on_submit_custom_employee_grade(doc, event):
         "Employee Grade", doc.custom_employee_grade)
 
     # prepare links
-    employee_grade_link = frappe.utils.get_url_to_form(
-        "Employee Grade", employee_grade.name)
-    salary_structure_link = frappe.utils.get_url_to_form(
-        "Salary Structure", doc.name)
+    employee_grade_link = "<a herf='{0}'>{1}</a>".format(
+        frappe.utils.get_url_to_form("Employee Grade", employee_grade.name),
+        employee_grade.name
+    )
+    salary_structure_link = "<a herf='{0}'>{1}</a>".format(
+        frappe.utils.get_url_to_form("Salary Structure", doc.name),
+        doc.name
+    )
 
     # Step 2: Check if the Employee Grade has a default salary structure
     if employee_grade.default_salary_structure:
@@ -51,7 +55,7 @@ def on_submit_custom_employee_grade(doc, event):
             msg="The default salary structure of {0} \
             has been changed to Employee Grade: {1}".format(
                 employee_grade_link,
-                doc.name
+                salary_structure_link
             ),
             title="Action Completed",
         )
