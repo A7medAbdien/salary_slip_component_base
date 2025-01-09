@@ -25,8 +25,7 @@ def on_update(doc, event):
             "No Employee grade found consider crateing an Employee Grade")
     new_salary_structure = employee_grade.default_salary_structure
     if not new_salary_structure:
-        frappe.throw(
-            f"No defaulr salary structure found for grade {doc.grade}")
+        frappe.throw(msg=f"No defaulr salary structure found for grade {doc.grade}")
     print(f"\n\n\n new_salary_structure: {new_salary_structure} \n\n\n")
 
     # Step 2: Get current salary structure assignment

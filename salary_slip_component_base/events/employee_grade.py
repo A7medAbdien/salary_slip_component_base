@@ -23,7 +23,7 @@ def on_update(doc, event):
             "docstatus"
         )
         if is_canceled == 2:
-            frappe.throw(f"The Default Salary Structure {
+            frappe.throw(msg=f"The Default Salary Structure {
                 salary_structure_link} is canceled and cannot be assigned."
             )
 
