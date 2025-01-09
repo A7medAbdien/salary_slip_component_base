@@ -23,9 +23,8 @@ def on_update(doc, event):
             "docstatus"
         )
         if is_canceled == 2:
-            frappe.throw(msg=f"The Default Salary Structure {
-                salary_structure_link} is canceled and cannot be assigned."
-            )
+            frappe.throw(msg="The Default Salary Structure {0} is \
+            canceled and cannot be assigned.".format(salary_structure_link))
 
         # Step 2: Check if it is assigned to another Employee Grade
         # assigned_employee_grade = frappe.db.get_value(
