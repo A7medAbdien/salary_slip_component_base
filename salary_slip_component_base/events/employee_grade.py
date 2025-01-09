@@ -37,7 +37,7 @@ def on_update(doc, event):
         # if not assigned_employee_grade:
         #    frappe.throw(f"The Default Salary Structure {
         #                salary_structure_link} is not assigned to any Employee Grade.")
-        employee_grade_link = "<a herf='{0}'>{1}</a>".format(
+        employee_grade_link = "<a href='{0}'>{1}</a>".format(
             frappe.utils.get_link_to_form(
                 "Employee Grade", assigned_employee_grade),
             assigned_employee_grade
