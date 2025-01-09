@@ -45,10 +45,8 @@ def on_submit_custom_employee_grade(doc, event):
         employee_grade.default_salary_structure = doc.name
         employee_grade.save()
         frappe.msgprint(
-            msg=f"The default salary structure of \
-            <a href='{employee_grade_link}'>{employee_grade.name}</a> \
-            has been changed to \
-            Employee Grade: {doc.name}",
+            msg=f"The default salary structure of {employee_grade_link} \
+            has been changed to Employee Grade: {doc.name}",
             title="Action Completed",
         )
 
@@ -74,7 +72,6 @@ def on_cancel_custom_employee_grade(doc, event):
                             "default_salary_structure", None)
         frappe.msgprint(
             msg=f"The default salary structure of \
-            <a href='{frappe.utils.get_url_to_form('Employee Grade', employee_grade)}'>{employee_grade}</a> \
-            now empty",
+            {frappe.utils.get_url_to_form('Employee Grade', employee_grade)} now empty",
             title="Action Completed",
         )
