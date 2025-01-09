@@ -26,11 +26,11 @@ def on_submit_custom_employee_grade(doc, event):
     employee_grade = frappe.get_doc("Employee Grade", doc.custom_employee_grade)
 
     # prepare links
-    employee_grade_link = "<a href='{0}'>{1}</a>".format(
+    employee_grade_link = "<a target='_blank' href='{0}'>{1}</a>".format(
         frappe.utils.get_url_to_form("Employee Grade", employee_grade.name),
         employee_grade.name
     )
-    salary_structure_link = "<a href='{0}'>{1}</a>".format(
+    salary_structure_link = "<a target='_blank' href='{0}'>{1}</a>".format(
         frappe.utils.get_url_to_form("Salary Structure", employee_grade.default_salary_structure),
         employee_grade.default_salary_structure
     )
