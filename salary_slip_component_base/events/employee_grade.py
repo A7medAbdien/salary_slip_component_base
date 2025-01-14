@@ -58,7 +58,7 @@ def update_employee_salary_structure_assignemnt(doc, event):
     Updates Employee "Salary Structure Assignment" on changing
     the "Default Salary Structure" to the new "Default Salary Structure".
     - Step 1: get the previous version of the doc, to get the previous Structure
-    Case A: for some reason got assigned to a different Structure
+    Case A: for some reason, an employee got assigned to a different Structure
         - Step 3: get all employee with this grade
         - Step 4: create a new Assignment with the new Structure
     Case B: different

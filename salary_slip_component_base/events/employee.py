@@ -17,7 +17,7 @@ def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
-    if doc.grade:
+    if doc.grade and doc.get_doc_before_save().grade != doc.grade:
         # Step 1: Get salary structure based on employee grade
         employee_grade = frappe.get_doc("Employee Grade", doc.grade)
         if not employee_grade:
@@ -25,7 +25,8 @@ def on_update(doc, event):
                 "No Employee Grade found. Please create an Employee Grade.")
         new_salary_structure = employee_grade.default_salary_structure
         if not new_salary_structure:
-            frappe.throw(
+            frappe.msgprint(
+                title="Warning",
                 msg="No default salary structure found for grade {0}. Please set a default salary structure.".format(
                     doc.grade)
             )
@@ -38,6 +39,8 @@ def on_update(doc, event):
         print(f"Current assignment: {current_assignments}")
         if len(current_assignments) > 0:
             current_assignment = current_assignments[0]
+            current_assignment = frappe.get_doc(
+                "Salary Structure Assignment", current_assignment)
             # Step 3: Check if salary structure is different
             if current_assignment and current_assignment.salary_structure != new_salary_structure:
                 # Step 4: Cancel the previous salary structure assignment
