@@ -48,12 +48,13 @@ def on_update(doc, event):
                 # Step 4: Cancel the previous salary structure assignment
                 current_assignment.cancel()
         # Step 5: Create a new salary structure assignment with the new salary structure
-        new_assignment = frappe.get_doc({
-            "doctype": "Salary Structure Assignment",
-            "employee": doc.name,
-            "salary_structure": new_salary_structure,
-            "from_date": add_months(nowdate(), -2),
-            "company": doc.company,
-        })
-        new_assignment.insert()
-        new_assignment.submit()
+        if not is_empty(new_salary_structure):
+            new_assignment = frappe.get_doc({
+                "doctype": "Salary Structure Assignment",
+                "employee": doc.name,
+                "salary_structure": new_salary_structure,
+                "from_date": add_months(nowdate(), -2),
+                "company": doc.company,
+            })
+            new_assignment.insert()
+            new_assignment.submit()
