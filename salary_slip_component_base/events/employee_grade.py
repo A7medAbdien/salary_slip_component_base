@@ -94,7 +94,7 @@ def update_employee_salary_structure_assignemnt(doc, event):
                     title="Warning",
                     msg="No default salary structure found for grade {0}.\
                     Please consider seting a default salary structure.".format(
-                        doc.grade)
+                        doc.name)
                 )
                 return
             for emp in emps:
