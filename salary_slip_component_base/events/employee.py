@@ -19,15 +19,14 @@ def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
-    print(f"\n\n\n is_empty(doc.grade): {is_empty(doc.grade)} \n\n\n")
     if not is_empty(doc.grade) and doc.get_doc_before_save().grade != doc.grade:
         # Step 1: Get salary structure based on employee grade
         employee_grade = frappe.get_doc("Employee Grade", doc.grade)
-        if not is_empty(employee_grade):
+        if is_empty(employee_grade):
             frappe.throw(
                 "No Employee Grade found. Please create an Employee Grade.")
         new_salary_structure = employee_grade.default_salary_structure
-        if not is_empty(new_salary_structure):
+        if is_empty(new_salary_structure):
             frappe.msgprint(
                 title="Warning",
                 msg="No default salary structure found for grade {0}. Please set a default salary structure.".format(
