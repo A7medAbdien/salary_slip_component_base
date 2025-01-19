@@ -5,6 +5,9 @@ def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
+    if doc.is_new():
+        return
+    print("\n\n fk that")
     validate_default_salary_structure(doc, event)
     update_employee_salary_structure_assignemnt(doc, event)
 
@@ -69,7 +72,7 @@ def update_employee_salary_structure_assignemnt(doc, event):
     # Step 1: get the previous version of the doc
     previous_doc = doc.get_doc_before_save()
     # Step 2: Check if the previous Structure different from the current
-    if previous_doc.default_salary_structure != doc.default_salary_structure:
+    if doc and previous_doc and previous_doc.default_salary_structure != doc.default_salary_structure:
         # Step 3: Get all Assignment with the previous Structure
         ssas = frappe.db.get_list(
             "Salary Structure Assignment",
@@ -80,7 +83,7 @@ def update_employee_salary_structure_assignemnt(doc, event):
         print(f"\n\n\n ssas: {ssas} \n\n\n")
 
         if len(ssas) == 0:
-            #Step 3: get all employee with this grade
+            # Step 3: get all employee with this grade
             emps = frappe.db.get_list(
                 "Employee",
                 filters={"grade": doc.name}

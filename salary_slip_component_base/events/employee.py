@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import nowdate, add_months
 
 
 def on_update(doc, event):
@@ -50,7 +51,7 @@ def on_update(doc, event):
             "doctype": "Salary Structure Assignment",
             "employee": doc.name,
             "salary_structure": new_salary_structure,
-            "from_date": frappe.utils.nowdate(),
+            "from_date": add_months(nowdate(), -2),
             "company": doc.company,
         })
         new_assignment.insert()
