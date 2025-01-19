@@ -25,7 +25,7 @@ def validate_default_salary_structure(doc, event):
         doc.default_salary_structure
     )
     # Step 1: Check if the Default Salary Structure is canceled
-    if doc.default_salary_structure:
+    if doc.default_salary_structure and doc is not None and doc.default_salary_structure is not None:
         is_canceled = frappe.db.get_value(
             "Salary Structure",
             doc.default_salary_structure,
