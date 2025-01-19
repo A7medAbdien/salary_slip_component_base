@@ -1,5 +1,6 @@
 import frappe
 from frappe.utils import nowdate, add_months
+from salary_slip_component_base.utils.validation import is_not_empty
 
 
 def on_update(doc, event):
@@ -18,14 +19,14 @@ def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
-    if doc.grade and doc.get_doc_before_save().grade != doc.grade:
+    if is_not_empty(doc.grade) and doc.get_doc_before_save().grade != doc.grade:
         # Step 1: Get salary structure based on employee grade
         employee_grade = frappe.get_doc("Employee Grade", doc.grade)
-        if not employee_grade or employee_grade is None:
+        if not is_not_empty(employee_grade):
             frappe.throw(
                 "No Employee Grade found. Please create an Employee Grade.")
         new_salary_structure = employee_grade.default_salary_structure
-        if not new_salary_structure or new_salary_structure is None:
+        if not is_not_empty(new_salary_structure):
             frappe.msgprint(
                 title="Warning",
                 msg="No default salary structure found for grade {0}. Please set a default salary structure.".format(

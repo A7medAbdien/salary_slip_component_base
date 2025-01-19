@@ -1,11 +1,13 @@
 import frappe
+from salary_slip_component_base.utils.validation import is_not_empty
+
 
 
 def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
-    if doc.is_new():
+    if doc.is_new() or is_not_empty(doc):
         return
     print("\n\n fk that")
     validate_default_salary_structure(doc, event)
@@ -25,7 +27,7 @@ def validate_default_salary_structure(doc, event):
         doc.default_salary_structure
     )
     # Step 1: Check if the Default Salary Structure is canceled
-    if doc.default_salary_structure and doc is not None and doc.default_salary_structure is not None:
+    if is_not_empty(doc.default_salary_structure):
         is_canceled = frappe.db.get_value(
             "Salary Structure",
             doc.default_salary_structure,
