@@ -14,7 +14,7 @@ def custom_on_submit(self):
         if is_allow_negative_salary:
             frappe.msgprint(_("Net Pay cannot be less than 0"))
         else:
-            frappe.thorw(_("Net Pay cannot be less than 0"))
+            frappe.throw(_("Net Pay cannot be less than 0"))
     self.set_status()
     self.update_status(self.name)
 
