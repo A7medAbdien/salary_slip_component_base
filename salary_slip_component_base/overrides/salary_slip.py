@@ -27,10 +27,13 @@ def custom_set_time_sheet(self):
             self.append("timesheets", {
                 "time_sheet": data.name,
                 "working_hours": data.total_hours,
+                # this is the custom part
                 "custom_salary_component": data.get("custom_salary_component"),
                 "custom_salary_component_base": data.get("custom_salary_component_base"),
             })
-            print(f"\n\n\n {data.get('custom_salary_component'), data.get('custom_salary_component_base') }\n\n\n")
+            print(f"\n\n\n {data.get('custom_salary_component'),
+                  data.get('custom_salary_component_base')}\n\n\n")
+
 
 # TODO: verifi which one is the one that overite, here or in the hook
 # Monkey patching: Replace the original function with the custom one
