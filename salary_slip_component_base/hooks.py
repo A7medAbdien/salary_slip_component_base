@@ -1,6 +1,7 @@
 from salary_slip_component_base.overrides.payroll_entry import (
     custom_set_payable_amount_against_payroll_payable_account,
-    custom_submit_salary_slips
+    custom_submit_salary_slips,
+    custom_get_salary_slip_details
 )
 from hrms.payroll.doctype.payroll_entry.payroll_entry import PayrollEntry
 from salary_slip_component_base.overrides.salary_slip import (
@@ -21,8 +22,8 @@ SalarySlip.set_time_sheet = custom_set_time_sheet
 SalarySlip.on_submit = custom_on_submit
 PayrollEntry.set_payable_amount_against_payroll_payable_account = \
     custom_set_payable_amount_against_payroll_payable_account
-PayrollEntry.submit_salary_slips = \
-    custom_submit_salary_slips
+PayrollEntry.submit_salary_slips = custom_submit_salary_slips
+PayrollEntry.get_salary_slip_details = custom_get_salary_slip_details
 
 # Apps
 # ------------------

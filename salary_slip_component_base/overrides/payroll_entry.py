@@ -210,3 +210,40 @@ def custom_set_payable_amount_against_payroll_payable_account(
             entry_type="payable",
             accounts=accounts,
         )
+
+# this method only called by make_bank_entry
+def custom_get_salary_slip_details(self, for_withheld_salaries=False):
+    SalarySlip = frappe.qb.DocType("Salary Slip")
+    SalaryDetail = frappe.qb.DocType("Salary Detail")
+
+    query = (
+        frappe.qb.from_(SalarySlip)
+        .join(SalaryDetail)
+        .on(SalarySlip.name == SalaryDetail.parent)
+        .select(
+            SalarySlip.name,
+            SalarySlip.employee,
+            SalarySlip.salary_structure,
+            SalarySlip.salary_withholding_cycle,
+            SalaryDetail.salary_component,
+            SalaryDetail.amount,
+            SalaryDetail.parentfield,
+        )
+        .where(
+            (SalarySlip.docstatus == 1)
+            # this is the custom part - to only consider salary slips with positive net pay
+            & (SalarySlip.net_pay > 0)
+            & (SalarySlip.start_date >= self.start_date)
+            & (SalarySlip.end_date <= self.end_date)
+            & (SalarySlip.payroll_entry == self.name)
+        )
+    )
+
+    if "lending" in frappe.get_installed_apps():
+        query = query.select(SalarySlip.total_loan_repayment)
+
+    if for_withheld_salaries:
+        query = query.where(SalarySlip.status == "Withheld")
+    else:
+        query = query.where(SalarySlip.status != "Withheld")
+    return query.run(as_dict=True)
