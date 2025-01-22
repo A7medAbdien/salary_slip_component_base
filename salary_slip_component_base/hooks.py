@@ -1,3 +1,13 @@
+from salary_slip_component_base.overrides.payroll_entry import (
+    custom_set_payable_amount_against_payroll_payable_account,
+    custom_submit_salary_slips_for_employees
+)
+from hrms.payroll.doctype.payroll_entry.payroll_entry import PayrollEntry
+from salary_slip_component_base.overrides.salary_slip import (
+    custom_set_time_sheet,
+    custom_on_submit
+)
+from hrms.payroll.doctype.salary_slip.salary_slip import SalarySlip
 app_name = "salary_slip_component_base"
 app_title = "Salary Slip Component Base"
 app_publisher = "a"
@@ -5,9 +15,15 @@ app_description = "An extention for the Payroll Salary Slips to allow a base com
 app_email = "ahmed.g.abdien@gmail.com"
 app_license = "mit"
 
-from hrms.payroll.doctype.salary_slip.salary_slip import SalarySlip
-import salary_slip_component_base.overrides.salary_slip
-SalarySlip.set_time_sheet = salary_slip_component_base.overrides.salary_slip.custom_set_time_sheet
+# Override standard doctype methods
+# ----------------
+SalarySlip.set_time_sheet = custom_set_time_sheet
+SalarySlip.on_submit = custom_on_submit
+
+PayrollEntry.set_payable_amount_against_payroll_payable_account = \
+    custom_set_payable_amount_against_payroll_payable_account
+PayrollEntry.submit_salary_slips_for_employees = \
+    custom_submit_salary_slips_for_employees
 
 # Apps
 # ------------------

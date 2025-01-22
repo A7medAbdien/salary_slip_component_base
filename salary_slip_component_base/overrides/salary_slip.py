@@ -1,5 +1,12 @@
 import frappe
-from hrms.payroll.doctype.salary_slip.salary_slip import SalarySlip
+from frappe import _
+
+
+def custom_on_submit(self):
+    if self.net_pay < 0:
+        frappe.msgprint(_("Net Pay cannot be less than 0"))
+    self.set_status()
+    self.update_status(self.name)
 
 
 def custom_set_time_sheet(self):
@@ -33,8 +40,3 @@ def custom_set_time_sheet(self):
             })
             print(f"\n\n\n {data.get('custom_salary_component'),
                   data.get('custom_salary_component_base')}\n\n\n")
-
-
-# TODO: verifi which one is the one that overite, here or in the hook
-# Monkey patching: Replace the original function with the custom one
-SalarySlip.set_time_sheet = custom_set_time_sheet
