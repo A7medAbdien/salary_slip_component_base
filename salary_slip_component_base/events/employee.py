@@ -19,7 +19,11 @@ def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
-    if not is_empty(doc.grade) and doc.get_doc_before_save().grade != doc.grade:
+    previous_doc = doc.get_doc_before_save()
+    previous_doc_grade = None
+    if previous_doc:
+        previous_doc_grade = previous_doc.grade
+    if not is_empty(doc.grade) and previous_doc_grade != doc.grade:
         # Step 1: Get salary structure based on employee grade
         employee_grade = frappe.get_doc("Employee Grade", doc.grade)
         if is_empty(employee_grade):
