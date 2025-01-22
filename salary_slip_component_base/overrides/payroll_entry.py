@@ -150,6 +150,8 @@ def custom_set_payable_amount_against_payroll_payable_account(
     payroll_entry_company = self.company
     negative_payroll_settings = get_negative_paryroll_settings(
         payroll_entry_company)
+    if negative_payroll_settings:
+        is_allow_negative_salary = negative_payroll_settings.is_active
     # Payable amount
     if employee_wise_accounting_enabled:
         """
@@ -167,7 +169,7 @@ def custom_set_payable_amount_against_payroll_payable_account(
         for employee, employee_details in self.employee_based_payroll_payable_entries.items():
             payable_amount = employee_details.get(
                 "earnings", 0) - employee_details.get("deductions", 0)
-            if is_allow_negative_salary and negative_payroll_settings.payable_amount < 0:
+            if is_allow_negative_salary and payable_amount < 0:
                 payable_amount = self.get_accounting_entries_and_payable_amount(
                     negative_payroll_settings.negative_account,
                     self.cost_center,
