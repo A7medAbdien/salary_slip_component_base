@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-22 16:50:30.667606",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "negative_payroll_payable_accounts_section",
+  "negative_payroll_payable_accounts"
+ ],
+ "fields": [
+  {
+   "fieldname": "negative_payroll_payable_accounts",
+   "fieldtype": "Table",
+   "options": "Negative Payroll Payable Accounts",
+   "reqd": 1
+  },
+  {
+   "fieldname": "negative_payroll_payable_accounts_section",
+   "fieldtype": "Section Break",
+   "label": "Negative Payroll Payable Accounts"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-01-22 16:52:17.096645",
+ "modified_by": "Administrator",
+ "module": "Salary Slip Component Base",
+ "name": "Negative Payroll Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

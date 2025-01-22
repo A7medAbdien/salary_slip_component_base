@@ -6,7 +6,44 @@ from frappe.utils import (
 )
 
 
-def custom_submit_salary_slips_for_employees(payroll_entry, salary_slips, publish_progress=True):
+def get_negative_paryroll_settings(company):
+    return frappe.get_doc("Negative Payroll Payable Accounts", company)
+
+
+# this is the method that allow the override
+@frappe.whitelist()
+def custom_submit_salary_slips(self):
+    self.check_permission("write")
+    salary_slips = self.get_sal_slip_list(ss_status=0)
+
+    if len(salary_slips) > 30 or frappe.flags.enqueue_payroll_entry:
+        self.db_set("status", "Queued")
+        frappe.enqueue(
+            submit_salary_slips_for_employees,
+            timeout=3000,
+            payroll_entry=self,
+            salary_slips=salary_slips,
+            publish_progress=False,
+        )
+        frappe.msgprint(
+            _("Salary Slip submission is queued. It may take a few minutes"),
+            alert=True,
+            indicator="blue",
+        )
+    else:
+        submit_salary_slips_for_employees(
+            self, salary_slips, publish_progress=False)
+
+
+# this is the actual overwrite
+def submit_salary_slips_for_employees(payroll_entry, salary_slips, publish_progress=True):
+    is_allow_negative_salary = False
+    payroll_entry_company = payroll_entry.company
+    negative_payroll_settings = get_negative_paryroll_settings(
+        payroll_entry_company)
+    if negative_payroll_settings:
+        is_allow_negative_salary = negative_payroll_settings.is_active
+
     try:
         submitted = []
         unsubmitted = []
@@ -15,14 +52,14 @@ def custom_submit_salary_slips_for_employees(payroll_entry, salary_slips, publis
 
         for entry in salary_slips:
             salary_slip = frappe.get_doc("Salary Slip", entry[0])
-            # if salary_slip.net_pay < 0:
-            #     unsubmitted.append(entry[0])
-            # else:
-            try:
-                salary_slip.submit()
-                submitted.append(salary_slip)
-            except frappe.ValidationError:
+            if not is_allow_negative_salary and salary_slip.net_pay < 0:
                 unsubmitted.append(entry[0])
+            else:
+                try:
+                    salary_slip.submit()
+                    submitted.append(salary_slip)
+                except frappe.ValidationError:
+                    unsubmitted.append(entry[0])
 
             count += 1
             if publish_progress:
@@ -109,6 +146,10 @@ def custom_set_payable_amount_against_payroll_payable_account(
     payroll_payable_account,
     employee_wise_accounting_enabled,
 ):
+    is_allow_negative_salary = False
+    payroll_entry_company = self.company
+    negative_payroll_settings = get_negative_paryroll_settings(
+        payroll_entry_company)
     # Payable amount
     if employee_wise_accounting_enabled:
         """
@@ -126,11 +167,9 @@ def custom_set_payable_amount_against_payroll_payable_account(
         for employee, employee_details in self.employee_based_payroll_payable_entries.items():
             payable_amount = employee_details.get(
                 "earnings", 0) - employee_details.get("deductions", 0)
-            print(f"\n\n\n set_payable_amount_against_payroll_payable_account - employee {
-                  employee} - payable_amount {payable_amount}")
-            if payable_amount < 0:
+            if is_allow_negative_salary and negative_payroll_settings.payable_amount < 0:
                 payable_amount = self.get_accounting_entries_and_payable_amount(
-                    "Payroll Negative Payable - KEY - KEY",
+                    negative_payroll_settings.negative_account,
                     self.cost_center,
                     payable_amount,
                     currencies,
@@ -142,8 +181,6 @@ def custom_set_payable_amount_against_payroll_payable_account(
                     party=employee,
                     accounts=accounts,
                 )
-                print(f" payroll_payable_account {
-                      payroll_payable_account}")
             else:
                 payable_amount = self.get_accounting_entries_and_payable_amount(
                     payroll_payable_account,
