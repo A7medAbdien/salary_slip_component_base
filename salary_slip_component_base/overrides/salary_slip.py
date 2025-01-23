@@ -48,5 +48,3 @@ def custom_set_time_sheet(self):
                 "custom_salary_component": data.get("custom_salary_component"),
                 "custom_salary_component_base": data.get("custom_salary_component_base"),
             })
-            print(f"\n\n\n {data.get('custom_salary_component'),
-                  data.get('custom_salary_component_base')}\n\n\n")
