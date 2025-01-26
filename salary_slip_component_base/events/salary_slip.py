@@ -1,4 +1,5 @@
 import frappe
+from salary_slip_component_base.events.salary_slip_events.salary_slip import get_loan_payments
 from frappe.utils import flt
 
 
@@ -6,7 +7,11 @@ def on_update(doc, event):
     if getattr(doc, "_on_update_handled", False):
         return
     doc._on_update_handled = True
+    get_loan_payments(doc)
+    calculate_component_amount_based_on_custom_base(doc)
+    doc.save()
 
+def calculate_component_amount_based_on_custom_base(doc):
     # print(doc.as_dict())
     for sd in doc.earnings + doc.deductions:
         salary_component = frappe.get_doc(
@@ -31,6 +36,5 @@ def on_update(doc, event):
                         sd.custom_component_base, precision=3)
 
     doc.set_totals()
-    doc.save()
     # print(doc.as_dict())
     # print("\n\n\nI ran MF\n\n\n")
