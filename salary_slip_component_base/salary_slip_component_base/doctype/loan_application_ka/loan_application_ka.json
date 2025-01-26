@@ -1,0 +1,227 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-23 14:00:57.480481",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_6e6b",
+  "amended_from",
+  "borrower_details_section",
+  "emp",
+  "emp_phone",
+  "column_break_vvap",
+  "emp_name",
+  "emp_wp",
+  "loan_details_section",
+  "amount",
+  "pay_per_month",
+  "ppm_round_adj",
+  "loan_doc",
+  "column_break_dkuz",
+  "start_date",
+  "inst_count",
+  "end_date",
+  "approval_details_section",
+  "approved_by",
+  "column_break_vloz",
+  "approved_at",
+  "loan_status_section",
+  "amount_paid",
+  "amount_remaining",
+  "column_break_ytqi",
+  "inst_paid",
+  "inst_remaining",
+  "payment_details_section",
+  "pay_status",
+  "payment_schedules"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_6e6b",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Loan Application KA",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "borrower_details_section",
+   "fieldtype": "Section Break",
+   "label": "Borrower Details"
+  },
+  {
+   "fetch_from": "emp.cell_number",
+   "fetch_if_empty": 1,
+   "fieldname": "emp_phone",
+   "fieldtype": "Int",
+   "label": "Phone Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_vvap",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "emp.employee_name",
+   "fetch_if_empty": 1,
+   "fieldname": "emp_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "emp.custom_whatsapp_number",
+   "fetch_if_empty": 1,
+   "fieldname": "emp_wp",
+   "fieldtype": "Int",
+   "label": "Whatsapp Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "loan_details_section",
+   "fieldtype": "Section Break",
+   "label": "Loan Details"
+  },
+  {
+   "fieldname": "pay_per_month",
+   "fieldtype": "Currency",
+   "label": "Pay Per Month"
+  },
+  {
+   "fieldname": "column_break_dkuz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "description": "If the start date after the 15th of the selected month, the borrower's schedule will be delayed and will start from the next month instead.",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "loan_doc",
+   "fieldtype": "Attach",
+   "label": "Loan Agreement"
+  },
+  {
+   "fieldname": "inst_count",
+   "fieldtype": "Int",
+   "label": "Total Instalments"
+  },
+  {
+   "fieldname": "approval_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approval Details"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_vloz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approved_at",
+   "fieldtype": "Date",
+   "label": "Approved At"
+  },
+  {
+   "fieldname": "loan_status_section",
+   "fieldtype": "Section Break",
+   "label": "Loan Status"
+  },
+  {
+   "fieldname": "column_break_ytqi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "inst_paid",
+   "fieldtype": "Int",
+   "label": "Installments Paid"
+  },
+  {
+   "fieldname": "payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "fieldname": "amount_paid",
+   "fieldtype": "Currency",
+   "label": "Amount Paid"
+  },
+  {
+   "fieldname": "emp",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "CPR",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ppm_round_adj",
+   "fieldtype": "Currency",
+   "label": "Pay Per Month - Rounding Adjustment"
+  },
+  {
+   "fieldname": "payment_schedules",
+   "fieldtype": "Table",
+   "label": "Payment Schedules",
+   "options": "Loan Payment Schedule KA"
+  },
+  {
+   "fieldname": "amount_remaining",
+   "fieldtype": "Currency",
+   "label": "Remaining Amount"
+  },
+  {
+   "fieldname": "pay_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "\nPaid\nUnpaid"
+  },
+  {
+   "fieldname": "inst_remaining",
+   "fieldtype": "Int",
+   "label": "Remaining Installments"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-01-26 16:38:19.871520",
+ "modified_by": "Administrator",
+ "module": "Salary Slip Component Base",
+ "name": "Loan Application KA",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
