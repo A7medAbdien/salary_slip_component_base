@@ -20,6 +20,7 @@ class LoanApplicationKA(Document):
             emp = frappe.get_doc("Employee", self.emp)
             self.emp_name = emp.employee_name
             self.phone = emp.cell_number
+            self.company = emp.company
             if emp.custom_whatsapp_number:
                 self.emp_wp = emp.custom_whatsapp_number
             else:
@@ -108,6 +109,8 @@ class LoanApplicationKA(Document):
                     "parenttype": "Loan Application KA",
                     "parentfield": "payment_schedules",
                     "idx": ps_index,
+                    "loan_app": self.name,
+                    "company": self.company,
                     "borrower": borrower,
                     "inst_index": ps_index,
                     "inst_amount": ps_pay,

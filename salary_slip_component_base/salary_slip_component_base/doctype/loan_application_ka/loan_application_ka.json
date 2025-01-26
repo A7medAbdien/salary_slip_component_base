@@ -13,6 +13,7 @@
   "column_break_vvap",
   "emp_name",
   "emp_wp",
+  "company",
   "loan_details_section",
   "amount",
   "pay_per_month",
@@ -209,12 +210,20 @@
    "fieldname": "inst_remaining",
    "fieldtype": "Int",
    "label": "Remaining Installments"
+  },
+  {
+   "fetch_from": "emp.company",
+   "fetch_if_empty": 1,
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-26 16:58:12.851273",
+ "modified": "2025-01-26 17:36:04.546109",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Loan Application KA",

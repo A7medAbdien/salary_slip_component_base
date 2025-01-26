@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "borrower",
+  "loan_app",
+  "company",
   "inst_index",
   "inst_amount",
   "balance_after_payment",
@@ -98,12 +100,30 @@
    "in_list_view": 1,
    "label": "Payment Due Date",
    "reqd": 1
+  },
+  {
+   "fieldname": "loan_app",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Loan Application",
+   "options": "Loan Application KA",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "borrower.company",
+   "fetch_if_empty": 1,
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-26 15:00:22.285246",
+ "modified": "2025-01-26 17:37:34.635221",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Loan Payment Schedule KA",
