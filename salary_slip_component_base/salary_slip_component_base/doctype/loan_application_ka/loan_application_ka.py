@@ -44,14 +44,26 @@ class LoanApplicationKA(Document):
                     (self.pay_per_month * self.inst_count)
 
     def on_submit(self):
-        self.approved_by = frappe.session.user
-        self.approved_at = today()
+        dt = "Loan Application KA"
+        current_user = frappe.session.user
+        frappe.db.set_value(
+            dt, self.name, "approved_by", current_user)
+        frappe.db.set_value(
+            dt, self.name, "approved_at", today())
 
-        self.inst_remaining = self.inst_count
-        self.inst_paid = self.inst_count - self.inst_remaining
+        frappe.db.set_value(
+            dt, self.name, "inst_remaining", self.inst_count)
+        inst_paid = self.inst_count - self.inst_remaining
+        frappe.db.set_value(
+            dt, self.name, "inst_paid", inst_paid)
 
-        self.amount_remaining = self.amount
-        self.amount_paid = self.amount - self.amount_remaining
+        frappe.db.set_value(
+            dt, self.name, "amount_remaining", self.amount
+        )
+        amount_paid = self.amount - self.amount_remaining
+        frappe.db.set_value(
+            dt, self.name, "amount_paid", amount_paid
+        )
 
         self.remove_payment_schedules()
         self.create_payment_schedules()
@@ -60,7 +72,7 @@ class LoanApplicationKA(Document):
         earliest_ps_name = self.get_earliest_unpaied_payment_schedule()
         earliest_ps = frappe.get_doc(
             "Loan Payment Schedule KA", earliest_ps_name)
-        frappe.db.set_value("Loan Application KA", self.name,
+        frappe.db.set_value(dt, self.name,
                             "pay_status", earliest_ps.status)
 
     def create_payment_schedules(self):
@@ -123,6 +135,3 @@ class LoanApplicationKA(Document):
             limit=1,
         )
         return pss[0]
-
-    def on_cancel(self):
-        self.cancel()
