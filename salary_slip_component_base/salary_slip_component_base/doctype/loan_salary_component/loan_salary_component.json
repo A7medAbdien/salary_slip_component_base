@@ -1,12 +1,12 @@
 {
  "actions": [],
  "autoname": "field:company",
- "creation": "2025-01-22 16:39:52.410756",
+ "creation": "2025-01-27 11:14:42.277769",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "company",
-  "negative_account",
+  "salary_component",
   "is_active"
  ],
  "fields": [
@@ -16,14 +16,16 @@
    "in_list_view": 1,
    "label": "Company",
    "options": "Company",
+   "reqd": 1,
    "unique": 1
   },
   {
-   "fieldname": "negative_account",
+   "fieldname": "salary_component",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Negative Payroll Payable Account",
-   "options": "Account"
+   "label": "Salary Component",
+   "options": "Salary Component",
+   "reqd": 1
   },
   {
    "default": "1",
@@ -36,10 +38,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-27 12:21:27.869010",
+ "modified": "2025-01-27 12:19:42.804659",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
- "name": "Negative Payroll Payable Accounts",
+ "name": "Loan Salary Component",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [],

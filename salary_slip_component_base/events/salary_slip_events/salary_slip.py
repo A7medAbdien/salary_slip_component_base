@@ -18,6 +18,14 @@ def get_loan_payments(doc):
     emp = doc.employee
     date = get_last_day(doc.posting_date)
     company = doc.company
+    loan_salary_component = get_loan_salary_component(company)
+    if not loan_salary_component:
+        frappe.msgprint(
+            "Loan Module Will not be implemented,\
+            Since thre is no Laon Salary Component for this company")
+        return
+
+    # Get Loan Applications
     loan_apps = frappe.db.get_list(
         "Loan Application KA",
         filters={
@@ -28,6 +36,10 @@ def get_loan_payments(doc):
             "pay_status": PaymentScheduleStatus.UNPAYED.value,
         },
     )
+    if len(loan_apps) == 0:
+        doc.add_comment("Comment", "Employee has no Unpaid Loan Application")
+        return
+
     loan_apps_list = [la["name"] for la in loan_apps]
     pss = frappe.get_all(
         "Loan Payment Schedule KA",
@@ -40,6 +52,7 @@ def get_loan_payments(doc):
         },
         fields=["*"],
     )
+    total_amount = 0
     for ps in pss:
         salary_slip_ps = frappe.get_doc(
             {
@@ -57,3 +70,14 @@ def get_loan_payments(doc):
         )
         salary_slip_ps.insert()
         doc.append("custom_loan_repayment", salary_slip_ps)
+        total_amount += ps.inst_amount
+
+    if total_amount > 0:
+        for sd in doc.earnings + doc.deductions:
+            if sd.salary_component == loan_salary_component.salary_component:
+                sd.custom_component_base = total_amount
+                sd.custom_component_base_rate = 1
+
+
+def get_loan_salary_component(company):
+    return frappe.get_doc("Loan Salary Component", company)

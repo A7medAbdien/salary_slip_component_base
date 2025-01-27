@@ -11,12 +11,11 @@ def on_update(doc, event):
     calculate_component_amount_based_on_custom_base(doc)
     doc.save()
 
+
 def calculate_component_amount_based_on_custom_base(doc):
-    # print(doc.as_dict())
     for sd in doc.earnings + doc.deductions:
         salary_component = frappe.get_doc(
             "Salary Component", sd.salary_component)
-        sd.custom_is_calculated_on_salary_slip = salary_component.custom_is_calculated_on_salary_slip
         # skip if not custom
         if not salary_component.custom_is_calculated_on_salary_slip:
             continue
@@ -26,6 +25,7 @@ def calculate_component_amount_based_on_custom_base(doc):
         if not sd.custom_component_base:
             sd.custom_component_base = salary_component.custom_component_base
 
+        # Timesheet Component
         for ts in doc.timesheets:
             # print(f"\n\n\n ts:{ts.custom_salary_component} sd:{sd.salary_component}\n\n\n")
             if ts.custom_salary_component == sd.salary_component:

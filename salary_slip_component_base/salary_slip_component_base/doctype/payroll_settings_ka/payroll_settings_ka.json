@@ -5,6 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "loan_payroll_salary_component_section",
+  "table_jsvz",
   "negative_payroll_payable_accounts_section",
   "negative_payroll_payable_accounts"
  ],
@@ -19,15 +21,26 @@
    "fieldname": "negative_payroll_payable_accounts_section",
    "fieldtype": "Section Break",
    "label": "Negative Payroll Payable Accounts"
+  },
+  {
+   "fieldname": "loan_payroll_salary_component_section",
+   "fieldtype": "Section Break",
+   "label": "Loan Payroll Salary Component"
+  },
+  {
+   "fieldname": "table_jsvz",
+   "fieldtype": "Table",
+   "options": "Loan Salary Component",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-22 16:52:17.096645",
+ "modified": "2025-01-27 11:26:47.421602",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
- "name": "Negative Payroll Settings",
+ "name": "Payroll Settings KA",
  "owner": "Administrator",
  "permissions": [
   {
