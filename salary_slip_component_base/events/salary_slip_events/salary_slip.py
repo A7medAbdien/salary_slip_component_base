@@ -40,7 +40,7 @@ def get_loan_payments(doc):
         doc.add_comment("Comment", "Employee has no Unpaid Loan Application")
         return
 
-    loan_apps_list = [la["name"] for la in loan_apps]
+    loan_apps_list = [la.name for la in loan_apps]
     pss = frappe.get_all(
         "Loan Payment Schedule KA",
         filters={

@@ -14,6 +14,9 @@ THRESHOLD_DAYS = 15
 
 
 class LoanApplicationKA(Document):
+    def on_cancel(self):
+        self.remove_payment_schedules()
+
     def before_save(self):
         # Borrower
         if self.emp:

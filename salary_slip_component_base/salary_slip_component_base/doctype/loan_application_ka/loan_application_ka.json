@@ -223,13 +223,15 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-26 17:36:04.546109",
+ "modified": "2025-01-27 15:48:08.713088",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Loan Application KA",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
