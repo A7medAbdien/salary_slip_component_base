@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class LoanSalaryComponent(Document):
+class NegativePayrollPayableAccountsKA(Document):
 	pass

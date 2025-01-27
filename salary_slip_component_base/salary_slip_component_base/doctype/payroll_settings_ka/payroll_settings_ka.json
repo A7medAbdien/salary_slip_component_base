@@ -14,7 +14,7 @@
   {
    "fieldname": "negative_payroll_payable_accounts",
    "fieldtype": "Table",
-   "options": "Negative Payroll Payable Accounts",
+   "options": "Negative Payroll Payable Accounts KA",
    "reqd": 1
   },
   {
@@ -30,14 +30,14 @@
   {
    "fieldname": "table_jsvz",
    "fieldtype": "Table",
-   "options": "Loan Salary Component",
+   "options": "Loan Salary Component KA",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-27 11:26:47.421602",
+ "modified": "2025-01-27 13:54:06.776755",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Payroll Settings KA",

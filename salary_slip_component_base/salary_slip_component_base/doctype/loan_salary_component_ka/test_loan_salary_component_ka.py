@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestNegativePayrollPayableAccounts(FrappeTestCase):
+class TestLoanSalaryComponentKA(FrappeTestCase):
 	pass

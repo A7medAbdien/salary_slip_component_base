@@ -80,4 +80,4 @@ def get_loan_payments(doc):
 
 
 def get_loan_salary_component(company):
-    return frappe.get_doc("Loan Salary Component", company)
+    return frappe.get_doc("Loan Salary Component KA", company)

@@ -7,7 +7,7 @@ from frappe.utils import (
 
 
 def get_negative_paryroll_settings(company):
-    return frappe.get_doc("Negative Payroll Payable Accounts", company)
+    return frappe.get_doc("Negative Payroll Payable Accounts KA", company)
 
 
 # this is the method that allow the override
