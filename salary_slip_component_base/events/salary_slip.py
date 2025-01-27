@@ -22,7 +22,6 @@ def delete_custom_loan_repayment(doc):
 
 def update_loan_payment_schedules_unpaid(doc):
     for ps in doc.custom_loan_repayment:
-        loan_app = frappe.get_doc("Loan Application KA", ps.loan_app)
         ps.loan_app = ""
         loan_payment_schedule = frappe.get_doc(
             "Loan Payment Schedule KA", ps.loan_payemnt_schedule)
@@ -43,7 +42,6 @@ def on_submit(doc, event):
 
 def update_loan_payment_schedules_paid(doc):
     for ps in doc.custom_loan_repayment:
-        loan_app = frappe.get_doc("Loan Application KA", ps.loan_app)
         loan_payment_schedule = frappe.get_doc(
             "Loan Payment Schedule KA", ps.loan_payemnt_schedule)
         loan_payment_schedule.status = PaymentScheduleStatus.PAID.value
