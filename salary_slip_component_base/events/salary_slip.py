@@ -22,6 +22,7 @@ def delete_custom_loan_repayment(doc):
 
 def update_loan_payment_schedules_unpaid(doc):
     for ps in doc.custom_loan_repayment:
+        loan_app = frappe.get_doc("Loan Application KA", ps.loan_app)
         ps.loan_app = ""
         loan_payment_schedule = frappe.get_doc(
             "Loan Payment Schedule KA", ps.loan_payemnt_schedule)
@@ -31,6 +32,9 @@ def update_loan_payment_schedules_unpaid(doc):
         loan_payment_schedule.paid_at = ""
         loan_payment_schedule.save()
         loan_payment_schedule.reload()
+        if loan_payment_schedule.balance_after_payment == 0:
+            frappe.db.set_value("Loan Application KA", ps.loan_app,
+                                "pay_status", PaymentScheduleStatus.UNPAYED.value)
 
 
 def on_submit(doc, event):
@@ -39,6 +43,7 @@ def on_submit(doc, event):
 
 def update_loan_payment_schedules_paid(doc):
     for ps in doc.custom_loan_repayment:
+        loan_app = frappe.get_doc("Loan Application KA", ps.loan_app)
         loan_payment_schedule = frappe.get_doc(
             "Loan Payment Schedule KA", ps.loan_payemnt_schedule)
         loan_payment_schedule.status = PaymentScheduleStatus.PAID.value
@@ -46,6 +51,10 @@ def update_loan_payment_schedules_paid(doc):
         loan_payment_schedule.deducted_from = doc.name
         loan_payment_schedule.paid_at = now()
         loan_payment_schedule.save()
+        loan_payment_schedule.reload()
+        if loan_payment_schedule.balance_after_payment == 0:
+            frappe.db.set_value("Loan Application KA", ps.loan_app,
+                                "pay_status", PaymentScheduleStatus.PAID.value)
 
 
 def on_update(doc, event):
