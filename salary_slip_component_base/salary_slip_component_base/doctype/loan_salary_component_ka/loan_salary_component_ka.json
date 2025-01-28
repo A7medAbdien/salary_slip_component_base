@@ -3,6 +3,7 @@
  "autoname": "field:company",
  "creation": "2025-01-27 11:14:42.277769",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "company",
@@ -38,7 +39,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-27 12:19:42.804659",
+ "modified": "2025-01-28 17:57:33.243661",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Loan Salary Component KA",

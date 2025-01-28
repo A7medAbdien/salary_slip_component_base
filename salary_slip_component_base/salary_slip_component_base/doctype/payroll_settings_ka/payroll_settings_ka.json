@@ -5,10 +5,12 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "negative_payroll_payable_accounts_section",
+  "negative_payroll_payable_accounts",
   "loan_payroll_salary_component_section",
   "table_jsvz",
-  "negative_payroll_payable_accounts_section",
-  "negative_payroll_payable_accounts"
+  "rent_payroll_salary_comonent_section",
+  "table_ncch"
  ],
  "fields": [
   {
@@ -32,12 +34,22 @@
    "fieldtype": "Table",
    "options": "Loan Salary Component KA",
    "reqd": 1
+  },
+  {
+   "fieldname": "rent_payroll_salary_comonent_section",
+   "fieldtype": "Section Break",
+   "label": "Rent Payroll Salary Comonent"
+  },
+  {
+   "fieldname": "table_ncch",
+   "fieldtype": "Table",
+   "options": "Rent Salary Component KA"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-27 13:54:06.776755",
+ "modified": "2025-01-28 17:54:20.188071",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Payroll Settings KA",

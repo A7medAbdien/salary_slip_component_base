@@ -1,13 +1,13 @@
 {
  "actions": [],
- "autoname": "field:company",
- "creation": "2025-01-22 16:39:52.410756",
+ "allow_rename": 1,
+ "creation": "2025-01-28 17:49:01.955483",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "company",
-  "negative_account",
+  "salary_component",
   "is_active"
  ],
  "fields": [
@@ -17,14 +17,15 @@
    "in_list_view": 1,
    "label": "Company",
    "options": "Company",
-   "unique": 1
+   "reqd": 1
   },
   {
-   "fieldname": "negative_account",
+   "fieldname": "salary_component",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Negative Payroll Payable Account",
-   "options": "Account"
+   "label": "Salary Component",
+   "options": "Salary Component",
+   "reqd": 1
   },
   {
    "default": "1",
@@ -37,11 +38,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-28 17:57:28.675871",
+ "modified": "2025-01-28 17:54:47.960182",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
- "name": "Negative Payroll Payable Accounts KA",
- "naming_rule": "By fieldname",
+ "name": "Rent Salary Component KA",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
