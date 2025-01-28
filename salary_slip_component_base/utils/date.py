@@ -1,5 +1,6 @@
 from frappe.utils import get_last_day, add_months, getdate
 
+
 def get_last_dates_between(start_date, end_date):
     """
     Returns a list of the last dates of each month between two dates.
@@ -25,3 +26,7 @@ def get_last_dates_between(start_date, end_date):
         current_date = add_months(current_date, 1)
 
     return last_dates
+
+
+def get_first_date(date):
+    return getdate(date).replace(day=1)

@@ -1,0 +1,195 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-28 13:25:31.864356",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "renter_details_section",
+  "renter",
+  "column_break_cdcw",
+  "company",
+  "rent_application_details_section",
+  "rent_app",
+  "column_break_tokq",
+  "pay_per_month",
+  "payment_amount_detials_section",
+  "rented_days",
+  "start_date",
+  "end_date",
+  "column_break_dpkh",
+  "month_days",
+  "pay_per_day",
+  "amount",
+  "section_break_nbml",
+  "payment_due_date",
+  "status",
+  "column_break_vplp",
+  "payment_type",
+  "deducted_from",
+  "recorded_by",
+  "paid_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Paid\nUnpaid",
+   "reqd": 1
+  },
+  {
+   "default": "Salary Deduction",
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "label": "Payment Type",
+   "options": "Manual\nSalary Deduction",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.payment_type==\"Salary Deduction\"",
+   "fieldname": "deducted_from",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Deducted From",
+   "options": "Salary Slip"
+  },
+  {
+   "fieldname": "paid_at",
+   "fieldtype": "Date",
+   "label": "Paid At"
+  },
+  {
+   "depends_on": "eval:doc.payment_type==\"Manual\"",
+   "fieldname": "recorded_by",
+   "fieldtype": "Link",
+   "label": "Recorded By",
+   "options": "User"
+  },
+  {
+   "fieldname": "payment_due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Payment Due Date",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "borrower.company",
+   "fetch_if_empty": 1,
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "renter",
+   "fieldtype": "Link",
+   "label": "Renter",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "renter_details_section",
+   "fieldtype": "Section Break",
+   "label": "Renter Details"
+  },
+  {
+   "fieldname": "column_break_cdcw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rent_application_details_section",
+   "fieldtype": "Section Break",
+   "label": "Rent Application Details"
+  },
+  {
+   "fieldname": "rent_app",
+   "fieldtype": "Link",
+   "label": "Rent Application",
+   "options": "Rent Application KA",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_tokq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "rent_app.pay_per_month",
+   "fetch_if_empty": 1,
+   "fieldname": "pay_per_month",
+   "fieldtype": "Currency",
+   "label": "Pay Per Month",
+   "non_negative": 1,
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_nbml",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "fieldname": "column_break_vplp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_amount_detials_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Amount Details"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "column_break_dpkh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date"
+  },
+  {
+   "fieldname": "pay_per_day",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Pay Per Day",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Usage-Based Amount"
+  },
+  {
+   "fieldname": "month_days",
+   "fieldtype": "Int",
+   "label": "Current Month Days"
+  },
+  {
+   "fieldname": "rented_days",
+   "fieldtype": "Int",
+   "label": "Rented Days"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-28 17:17:20.918680",
+ "modified_by": "Administrator",
+ "module": "Salary Slip Component Base",
+ "name": "Rent Payment Schedule KA",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

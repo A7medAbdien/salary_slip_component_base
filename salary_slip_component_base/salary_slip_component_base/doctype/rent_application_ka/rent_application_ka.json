@@ -1,0 +1,228 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-28 12:58:27.793584",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_tm4p",
+  "amended_from",
+  "renter_details_section",
+  "emp",
+  "emp_phone",
+  "column_break_zrtx",
+  "emp_name",
+  "emp_wp",
+  "company",
+  "rent_details_section",
+  "vehicle",
+  "pay_per_month",
+  "column_break_epzg",
+  "start_date",
+  "rent_agreement",
+  "approval_details_section",
+  "approved_by",
+  "column_break_pgss",
+  "approved_at",
+  "rent_status_section",
+  "payment_status",
+  "column_break_fuou",
+  "end_date",
+  "is_active",
+  "payment_details_section",
+  "total_payments",
+  "payment_schedules"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_tm4p",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rent Application KA",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "renter_details_section",
+   "fieldtype": "Section Break",
+   "label": "Renter Details"
+  },
+  {
+   "fieldname": "emp",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "CPR",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_zrtx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "emp.employee_name",
+   "fetch_if_empty": 1,
+   "fieldname": "emp_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "emp.custom_whatsapp_number",
+   "fetch_if_empty": 1,
+   "fieldname": "emp_wp",
+   "fieldtype": "Data",
+   "label": "Whatsapp Number",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "emp.cell_number",
+   "fetch_if_empty": 1,
+   "fieldname": "emp_phone",
+   "fieldtype": "Data",
+   "label": "Phone Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rent_details_section",
+   "fieldtype": "Section Break",
+   "label": "Rent Details"
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle",
+   "options": "Vehicle KA",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pay_per_month",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Pay Per Month",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_epzg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rent_agreement",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Rent Agreement"
+  },
+  {
+   "fieldname": "approval_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approval Details"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_pgss",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approved_at",
+   "fieldtype": "Date",
+   "label": "Approved At"
+  },
+  {
+   "fieldname": "rent_status_section",
+   "fieldtype": "Section Break",
+   "label": "Rent Status"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "fieldname": "column_break_fuou",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:!doc.is_active",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "fieldname": "total_payments",
+   "fieldtype": "Currency",
+   "label": "Total Payments"
+  },
+  {
+   "default": "Unpaid",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "\nPaid\nUnpaid"
+  },
+  {
+   "fetch_from": "emp.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_schedules",
+   "fieldtype": "Table",
+   "label": "Payment Schedules",
+   "options": "Rent Payment Schedule KA"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-01-28 17:17:56.857155",
+ "modified_by": "Administrator",
+ "module": "Salary Slip Component Base",
+ "name": "Rent Application KA",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
