@@ -32,10 +32,14 @@ def on_submit(doc, event):
     update_rent_payment_schedules_paid(doc)
 
 
-def before_save(doc, event):
+def on_update(doc, event):
+    if getattr(doc, "_on_update_handled", False):
+        return
+    doc._on_update_handled = True
     get_loan_payments(doc)
     get_rent_payments(doc)
     calculate_component_amount_based_on_custom_base(doc)
+    doc.save()
 
 
 def calculate_component_amount_based_on_custom_base(doc):
