@@ -16,15 +16,17 @@ from salary_slip_component_base.events.salary_slip_events.custom_loan_repayment 
 
 
 def on_trash(doc, event):
-    delete_custom_loan_repayment(doc)
-    delete_custom_rent_repayment(doc)
+    if doc.custom_loan_repayment and doc.custom_rent_repayment:
+        delete_custom_loan_repayment(doc)
+        delete_custom_rent_repayment(doc)
 
 
 def before_cancel(doc, event):
-    update_loan_payment_schedules_unpaid(doc)
-    delete_custom_loan_repayment(doc)
-    update_rent_payment_schedules_unpaid(doc)
-    delete_custom_rent_repayment(doc)
+    if doc.custom_loan_repayment and doc.custom_rent_repayment:
+        update_loan_payment_schedules_unpaid(doc)
+        delete_custom_loan_repayment(doc)
+        update_rent_payment_schedules_unpaid(doc)
+        delete_custom_rent_repayment(doc)
 
 
 def on_submit(doc, event):
