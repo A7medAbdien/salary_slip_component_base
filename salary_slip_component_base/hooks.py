@@ -167,7 +167,8 @@ override_doctype_class = {
 
 doc_events = {
     "Salary Slip": {
-        "on_update": "salary_slip_component_base.events.salary_slip.on_update",
+        # "on_update": "salary_slip_component_base.events.salary_slip.on_update",
+        "before_save": "salary_slip_component_base.events.salary_slip.before_save",
         "on_submit": "salary_slip_component_base.events.salary_slip.on_submit",
         "before_cancel": "salary_slip_component_base.events.salary_slip.before_cancel",
         "on_trash": "salary_slip_component_base.events.salary_slip.on_trash",

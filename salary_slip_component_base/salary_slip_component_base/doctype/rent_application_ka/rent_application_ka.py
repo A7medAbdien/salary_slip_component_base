@@ -29,7 +29,7 @@ class RentApplicationKA(Document):
             self.company = emp.company
             self.emp_wp = emp.custom_whatsapp_number
 
-    def on_update(self):
+    def on_submit(self):
         dt = "Loan Application KA"
         current_user = frappe.session.user
         frappe.db.set_value(

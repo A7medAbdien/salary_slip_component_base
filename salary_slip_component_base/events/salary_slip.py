@@ -1,6 +1,11 @@
 import frappe
 from salary_slip_component_base.enums import PaymentScheduleStatus, PaymentType
-from salary_slip_component_base.events.salary_slip_events.salary_slip import get_loan_payments
+from salary_slip_component_base.events.salary_slip_events.custom_loan_repayment import (
+    get_loan_payments,
+    delete_custom_loan_repayment,
+    update_loan_payment_schedules_paid,
+    update_loan_payment_schedules_unpaid,
+)
 from frappe.utils import (flt, now)
 
 
@@ -13,56 +18,13 @@ def before_cancel(doc, event):
     delete_custom_loan_repayment(doc)
 
 
-def delete_custom_loan_repayment(doc):
-    for ps in doc.custom_loan_repayment:
-        frappe.delete_doc(
-            "Salary Slip Loan Payment Schedule KA", ps.name, force=True)
-    doc.custom_loan_repayment = []
-
-
-def update_loan_payment_schedules_unpaid(doc):
-    for ps in doc.custom_loan_repayment:
-        ps.loan_app = ""
-        loan_payment_schedule = frappe.get_doc(
-            "Loan Payment Schedule KA", ps.loan_payemnt_schedule)
-        loan_payment_schedule.status = PaymentScheduleStatus.UNPAYED.value
-        loan_payment_schedule.payment_type = PaymentType.SALARY.value
-        loan_payment_schedule.deducted_from = ""
-        loan_payment_schedule.paid_at = ""
-        loan_payment_schedule.save()
-        loan_payment_schedule.reload()
-        if loan_payment_schedule.balance_after_payment == 0:
-            frappe.db.set_value("Loan Application KA", ps.loan_app,
-                                "pay_status", PaymentScheduleStatus.UNPAYED.value)
-
-
 def on_submit(doc, event):
     update_loan_payment_schedules_paid(doc)
 
 
-def update_loan_payment_schedules_paid(doc):
-    for ps in doc.custom_loan_repayment:
-        loan_payment_schedule = frappe.get_doc(
-            "Loan Payment Schedule KA", ps.loan_payemnt_schedule)
-        loan_payment_schedule.status = PaymentScheduleStatus.PAID.value
-        loan_payment_schedule.payment_type = PaymentType.SALARY.value
-        loan_payment_schedule.deducted_from = doc.name
-        loan_payment_schedule.paid_at = now()
-        loan_payment_schedule.save()
-        loan_payment_schedule.reload()
-        if loan_payment_schedule.balance_after_payment == 0:
-            frappe.db.set_value("Loan Application KA", ps.loan_app,
-                                "pay_status", PaymentScheduleStatus.PAID.value)
-
-
-def on_update(doc, event):
-    # TODO: change to before save
-    if getattr(doc, "_on_update_handled", False):
-        return
-    doc._on_update_handled = True
+def before_save(doc, event):
     get_loan_payments(doc)
     calculate_component_amount_based_on_custom_base(doc)
-    doc.save()
 
 
 def calculate_component_amount_based_on_custom_base(doc):
