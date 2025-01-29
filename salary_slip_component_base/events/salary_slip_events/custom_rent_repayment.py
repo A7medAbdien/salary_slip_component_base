@@ -103,7 +103,7 @@ def update_rent_payment_schedules_unpaid(doc):
         rent_payment_schedule.deducted_from = ""
         rent_payment_schedule.paid_at = ""
         rent_payment_schedule.save()
-        frappe.db.set_value("Rent Application KA", ps.rent_app,
+        frappe.db.set_value("Rent Application KA", rent_payment_schedule.parent,
                             "pay_status", PaymentScheduleStatus.UNPAYED.value)
 
 

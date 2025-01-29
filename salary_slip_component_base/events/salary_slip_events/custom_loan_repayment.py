@@ -101,9 +101,8 @@ def update_loan_payment_schedules_unpaid(doc):
         loan_payment_schedule.deducted_from = ""
         loan_payment_schedule.paid_at = ""
         loan_payment_schedule.save()
-        loan_payment_schedule.reload()
         if loan_payment_schedule.balance_after_payment == 0:
-            frappe.db.set_value("Loan Application KA", ps.loan_app,
+            frappe.db.set_value("Loan Application KA", loan_payment_schedule.parent,
                                 "pay_status", PaymentScheduleStatus.UNPAYED.value)
 
 
