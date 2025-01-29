@@ -1,29 +1,40 @@
 import frappe
+from frappe.utils import (flt)
 from salary_slip_component_base.enums import PaymentScheduleStatus, PaymentType
+from salary_slip_component_base.events.salary_slip_events.custom_rent_repayment import (
+    get_rent_payments,
+    delete_custom_rent_repayment,
+    update_rent_payment_schedules_paid,
+    update_rent_payment_schedules_unpaid,
+)
 from salary_slip_component_base.events.salary_slip_events.custom_loan_repayment import (
     get_loan_payments,
     delete_custom_loan_repayment,
     update_loan_payment_schedules_paid,
     update_loan_payment_schedules_unpaid,
 )
-from frappe.utils import (flt, now)
 
 
 def on_trash(doc, event):
     delete_custom_loan_repayment(doc)
+    delete_custom_rent_repayment(doc)
 
 
 def before_cancel(doc, event):
     update_loan_payment_schedules_unpaid(doc)
     delete_custom_loan_repayment(doc)
+    update_rent_payment_schedules_unpaid(doc)
+    delete_custom_rent_repayment(doc)
 
 
 def on_submit(doc, event):
     update_loan_payment_schedules_paid(doc)
+    update_rent_payment_schedules_paid(doc)
 
 
 def before_save(doc, event):
     get_loan_payments(doc)
+    get_rent_payments(doc)
     calculate_component_amount_based_on_custom_base(doc)
 
 

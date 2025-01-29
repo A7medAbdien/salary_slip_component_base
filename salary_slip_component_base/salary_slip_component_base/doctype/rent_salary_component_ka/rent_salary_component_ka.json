@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:company",
  "creation": "2025-01-28 17:49:01.955483",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -17,7 +18,8 @@
    "in_list_view": 1,
    "label": "Company",
    "options": "Company",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "salary_component",
@@ -38,10 +40,11 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-28 17:54:47.960182",
+ "modified": "2025-01-29 11:20:16.679162",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Rent Salary Component KA",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

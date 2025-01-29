@@ -28,6 +28,7 @@ class RentApplicationKA(Document):
             self.emp_phone = emp.cell_number
             self.company = emp.company
             self.emp_wp = emp.custom_whatsapp_number
+        self.pay_status = PaymentScheduleStatus.UNPAYED.value
 
     def on_submit(self):
         dt = "Loan Application KA"
