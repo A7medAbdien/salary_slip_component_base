@@ -20,8 +20,11 @@ class RentApplicationKA(Document):
     def on_cancel(self):
         self.remove_payment_schedules()
 
+    def before_insert(self):
+        if len(self.payment_schedules) > 0:
+            self.payment_schedules = []
+
     def before_save(self):
-        # Borrower
         if self.emp:
             emp = frappe.get_doc("Employee", self.emp)
             self.emp_name = emp.employee_name
