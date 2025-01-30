@@ -9,3 +9,12 @@ class PaymentType(Enum):
 class PaymentScheduleStatus(Enum):
     PAID = "Paid"
     UNPAYED = "Unpaid"
+
+
+class ApplicationsStatus(Enum):
+    DRAFT = "Draft"
+    PENDING = "Pending"
+    ACTIVE = "Active"
+    CANCELLED = "Cancelled"
+    PAID = "Paid"
+    UNPAIED = "Unpaid"
