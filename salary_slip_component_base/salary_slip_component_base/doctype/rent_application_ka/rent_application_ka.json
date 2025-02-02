@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "{emp}/{vehicle}/{###}",
  "creation": "2025-01-28 12:58:27.793584",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -57,6 +58,7 @@
    "fieldname": "emp",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "CPR",
    "options": "Employee",
    "reqd": 1
@@ -98,11 +100,14 @@
    "fieldname": "vehicle",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Vehicle",
    "options": "Vehicle KA",
    "reqd": 1
   },
   {
+   "fetch_from": "vehicle.pay_per_month",
+   "fetch_if_empty": 1,
    "fieldname": "pay_per_month",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -117,6 +122,7 @@
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
+   "in_standard_filter": 1,
    "label": "Start Date",
    "reqd": 1
   },
@@ -155,6 +161,7 @@
    "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
+   "in_standard_filter": 1,
    "label": "Is Active"
   },
   {
@@ -181,6 +188,7 @@
    "fetch_from": "emp.company",
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Company",
    "options": "Company",
    "read_only": 1
@@ -202,10 +210,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-29 11:22:26.861390",
+ "modified": "2025-02-02 13:43:38.178511",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Rent Application KA",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

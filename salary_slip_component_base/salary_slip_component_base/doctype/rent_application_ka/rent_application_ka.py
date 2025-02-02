@@ -9,6 +9,7 @@ from frappe.utils import (
     today,
     getdate,
     add_to_date,
+    get_link_to_form,
 )
 from salary_slip_component_base.enums import ApplicationsStatus, PaymentScheduleStatus, PaymentType
 from salary_slip_component_base.utils.date import get_first_date
@@ -33,6 +34,9 @@ class RentApplicationKA(Document):
             self.emp_phone = emp.cell_number
             self.company = emp.company
             self.emp_wp = emp.custom_whatsapp_number
+        if self.vehicle:
+            vehicle = frappe.get_doc("Vehicle KA", self.vehicle)
+            self.pay_per_month = vehicle.pay_per_month
         self.pay_status = PaymentScheduleStatus.UNPAYED.value
 
     def on_submit(self):
@@ -94,7 +98,7 @@ class RentApplicationKA(Document):
         for ps in self.payment_schedules:
             ps.delete()
 
-    def prepare_for_close(self):
+    def prepare_to_close(self):
         """
         Prepare Rent Application for close,
         Which will prevent from creating new payment schedules,
@@ -104,8 +108,8 @@ class RentApplicationKA(Document):
             frappe.throw("You cannot close an inactive Rent Application")
         if not is_empty(self.end_date):
             frappe.throw("Can not close a Rent Application with end date")
-        if self.status == PaymentScheduleStatus.PAID.value or \
-                self.status == PaymentScheduleStatus.UNPAYED.value:
+        if self.workflow_state == PaymentScheduleStatus.PAID.value or \
+                self.workflow_state == PaymentScheduleStatus.UNPAYED.value:
             frappe.throw(
                 "You cannot close an already Paied or Unpaid Rent Application"
             )
@@ -158,13 +162,28 @@ class RentApplicationKA(Document):
         return can_close
 
     def create_new_rent_application_with_different_vehicle(self, vehicle, rent_agr):
-        new_rent_app = frappe.get_doc("Rent Application KA")
-        new_rent_app.emp = self.emp
-        new_rent_app.vehicle = vehicle
-        new_rent_app.rent_agreement = rent_agr
-        new_rent_app.start_date = today()
-        new_rent_app.workflow_state = ApplicationsStatus.PENDING.value
+        vehicle = frappe.get_doc("Vehicle KA", vehicle)
+        new_rent_app = frappe.get_doc({
+            "doctype": "Rent Application KA",
+            "emp": self.emp,
+            "vehicle": vehicle.name,
+            "pay_per_month": vehicle.pay_per_month,
+            "rent_agreement": rent_agr,
+            "start_date": today(),
+        })
         new_rent_app.insert()
+        new_rent_app.add_comment(
+            "Comment",
+            "This Rent Application is based on {},\
+            Vehicle changed from {} to {}".format(
+                get_link_to_form("Rent Application KA", self.name),
+                get_link_to_form("Vehicle KA", self.vehicle),
+                get_link_to_form("Vehicle KA", vehicle.name),
+            )
+        )
+        frappe.msgprint("New Rent Application Created Successfully, {}".format(
+            get_link_to_form("Rent Application KA", new_rent_app.name)
+        ))
 
     def add_to_rider_rent_applicaiton_history(self):
         rider_ra_history = frappe.get_doc({
