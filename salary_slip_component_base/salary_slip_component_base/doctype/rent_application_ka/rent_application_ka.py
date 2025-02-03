@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import (
     date_diff,
+    month_diff,
     get_last_day,
     today,
     getdate,
@@ -19,6 +20,12 @@ THRESHOLD_DAYS = 15
 
 
 class RentApplicationKA(Document):
+    def on_trash(self):
+        self.remove_payment_schedules()
+        self.remove_from_rider_rent_applicaiton_history()
+        self.remove_from_vehicle_rent_applicaiton_history()
+        self.clear_active_vehicle_and_employee()
+
     def on_cancel(self):
         self.remove_payment_schedules()
         self.remove_from_rider_rent_applicaiton_history()
@@ -50,8 +57,11 @@ class RentApplicationKA(Document):
                     get_link_to_form("Vehicle KA", vehicle.name),
                     get_link_to_form("Employee", vehicle.rider)
                 ))
-            self.vehicle_name = vehicle.vehicle_name
         self.pay_status = PaymentScheduleStatus.UNPAYED.value
+
+    def on_update(self):
+        self.create_payment_schedules()
+        self.reload()
 
     def on_submit(self):
         dt = "Loan Application KA"
@@ -60,21 +70,31 @@ class RentApplicationKA(Document):
             dt, self.name, "approved_by", current_user)
         frappe.db.set_value(
             dt, self.name, "approved_at", today())
-        self.create_payment_schedule()
         self.add_to_rider_rent_applicaiton_history()
         self.add_to_vehicle_rent_applicaiton_history()
-        self.update_activce_vehicle_and_employee(self.vehicle)
+        self.update_activce_vehicle_and_employee()
         self.reload()
 
-    def create_payment_schedule(self):
+    def create_payment_schedules(self):
+        self.remove_payment_schedules()
+        today_date = getdate(today())
+        start_date = getdate(self.start_date)
+        number_of_months = month_diff(today_date, start_date)
+        if number_of_months > 0:
+            for i in range(number_of_months):
+                self.create_payment_schedule(i)
+        else:
+            self.create_payment_schedule(0)
+
+    def create_payment_schedule(self, i):
         renter = self.emp
         pay_per_month = self.pay_per_month
         default_status = PaymentScheduleStatus.UNPAYED.value
         default_payment_type = PaymentType.SALARY.value
         # Calculate start and end dates
         start_date = getdate(self.start_date)
-        if len(self.payment_schedules) > 0:
-            prev_ps = self.payment_schedules[0]
+        if i > 0:
+            prev_ps = self.payment_schedules[i-1]
             prev_end_date = get_last_day(getdate(prev_ps.end_date))
             start_date = add_to_date(prev_end_date, days=1)
         end_date = get_last_day(start_date)
@@ -109,6 +129,7 @@ class RentApplicationKA(Document):
             }
         )
         ps.insert()
+        self.append("payment_schedules", ps)
 
     def remove_payment_schedules(self):
         for ps in self.payment_schedules:
@@ -227,7 +248,7 @@ class RentApplicationKA(Document):
     def add_to_vehicle_rent_applicaiton_history(self):
         rider_ra_history = frappe.get_doc({
             "doctype": "Vehicle Rent Application History KA",
-            "parent": self.emp,
+            "parent": self.vehicle,
             "parenttype": "Vehicle KA",
             "parentfield": "rent_history",
             "rent_app": self.name,
@@ -240,7 +261,7 @@ class RentApplicationKA(Document):
         rider_ra_history.insert()
 
     def remove_from_vehicle_rent_applicaiton_history(self):
-        vehicle = frappe.get_doc("Vehicle KA", self.emp)
+        vehicle = frappe.get_doc("Vehicle KA", self.vehicle)
         for ra_history in vehicle.rent_history:
             if ra_history.rent_app == self.name:
                 ra_history.delete()
@@ -253,9 +274,10 @@ class RentApplicationKA(Document):
         vehicle.rider = None
         vehicle.save()
 
-    def update_activce_vehicle_and_employee(self, vehicle):
+    def update_activce_vehicle_and_employee(self):
         emp = frappe.get_doc("Employee", self.emp)
-        emp.custom_vehicle = emp.name
+        vehicle = frappe.get_doc("Vehicle KA", self.vehicle)
+        emp.custom_vehicle = vehicle.name
         emp.save()
-        vehicle.rider = vehicle
+        vehicle.rider = emp.name
         vehicle.save()

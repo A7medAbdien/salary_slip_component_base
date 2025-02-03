@@ -25,6 +25,9 @@ PayrollEntry.set_payable_amount_against_payroll_payable_account = \
 PayrollEntry.submit_salary_slips = custom_submit_salary_slips
 PayrollEntry.get_salary_slip_details = custom_get_salary_slip_details
 
+fixtures = [
+    {"dt": "Workflow"}
+]
 # Apps
 # ------------------
 
