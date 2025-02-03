@@ -22,6 +22,8 @@ class RentApplicationKA(Document):
     def on_cancel(self):
         self.remove_payment_schedules()
         self.remove_from_rider_rent_applicaiton_history()
+        self.remove_from_vehicle_rent_applicaiton_history()
+        self.clear_active_vehicle_and_employee()
 
     def before_insert(self):
         if len(self.payment_schedules) > 0:
@@ -34,9 +36,21 @@ class RentApplicationKA(Document):
             self.emp_phone = emp.cell_number
             self.company = emp.company
             self.emp_wp = emp.custom_whatsapp_number
+            if emp.custom_vehicle:
+                frappe.throw("Employee {} already renting vehicle {}".format(
+                    get_link_to_form("Employee", emp.name),
+                    get_link_to_form("Vehicle KA", emp.custom_vehicle)
+                ))
         if self.vehicle:
             vehicle = frappe.get_doc("Vehicle KA", self.vehicle)
             self.pay_per_month = vehicle.pay_per_month
+            # NOTE: we should never reach this state, since Available Vehicles only are selectable
+            if vehicle.rider:
+                frappe.throw("Vehicle {} already rented by employee {}".format(
+                    get_link_to_form("Vehicle KA", vehicle.name),
+                    get_link_to_form("Employee", vehicle.rider)
+                ))
+            self.vehicle_name = vehicle.vehicle_name
         self.pay_status = PaymentScheduleStatus.UNPAYED.value
 
     def on_submit(self):
@@ -48,6 +62,8 @@ class RentApplicationKA(Document):
             dt, self.name, "approved_at", today())
         self.create_payment_schedule()
         self.add_to_rider_rent_applicaiton_history()
+        self.add_to_vehicle_rent_applicaiton_history()
+        self.update_activce_vehicle_and_employee(self.vehicle)
         self.reload()
 
     def create_payment_schedule(self):
@@ -123,6 +139,7 @@ class RentApplicationKA(Document):
         frappe.db.set_value("Rent Application KA", self.name,
                             "workflow_state", ApplicationsStatus.UNPAIED.value)
 
+        self.clear_active_vehicle_and_employee()
         # NOTE: this should never happens,
         """
         since KA Companies always pays January Payroll after the month ends,
@@ -181,6 +198,7 @@ class RentApplicationKA(Document):
                 get_link_to_form("Vehicle KA", vehicle.name),
             )
         )
+        self.update_activce_vehicle_and_employee(vehicle.name)
         frappe.msgprint("New Rent Application Created Successfully, {}".format(
             get_link_to_form("Rent Application KA", new_rent_app.name)
         ))
@@ -205,3 +223,39 @@ class RentApplicationKA(Document):
         for ra_history in rider.custom_rent_history:
             if ra_history.rent_app == self.name:
                 ra_history.delete()
+
+    def add_to_vehicle_rent_applicaiton_history(self):
+        rider_ra_history = frappe.get_doc({
+            "doctype": "Vehicle Rent Application History KA",
+            "parent": self.emp,
+            "parenttype": "Vehicle KA",
+            "parentfield": "rent_history",
+            "rent_app": self.name,
+            "rider": self.emp,
+            "vehicle": self.vehicle,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "pay_per_month": self.pay_per_month,
+        })
+        rider_ra_history.insert()
+
+    def remove_from_vehicle_rent_applicaiton_history(self):
+        vehicle = frappe.get_doc("Vehicle KA", self.emp)
+        for ra_history in vehicle.rent_history:
+            if ra_history.rent_app == self.name:
+                ra_history.delete()
+
+    def clear_active_vehicle_and_employee(self):
+        emp = frappe.get_doc("Employee", self.emp)
+        emp.custom_vehicle = None
+        emp.save()
+        vehicle = frappe.get_doc("Vehicle KA", self.vehicle)
+        vehicle.rider = None
+        vehicle.save()
+
+    def update_activce_vehicle_and_employee(self, vehicle):
+        emp = frappe.get_doc("Employee", self.emp)
+        emp.custom_vehicle = emp.name
+        emp.save()
+        vehicle.rider = vehicle
+        vehicle.save()
