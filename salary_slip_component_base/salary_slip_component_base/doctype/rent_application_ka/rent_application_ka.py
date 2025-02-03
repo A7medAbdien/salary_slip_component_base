@@ -64,12 +64,6 @@ class RentApplicationKA(Document):
         self.reload()
 
     def on_submit(self):
-        dt = "Loan Application KA"
-        current_user = frappe.session.user
-        frappe.db.set_value(
-            dt, self.name, "approved_by", current_user)
-        frappe.db.set_value(
-            dt, self.name, "approved_at", today())
         self.add_to_rider_rent_applicaiton_history()
         self.add_to_vehicle_rent_applicaiton_history()
         self.update_activce_vehicle_and_employee()

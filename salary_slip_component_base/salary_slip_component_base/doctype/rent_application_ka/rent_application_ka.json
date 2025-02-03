@@ -21,10 +21,6 @@
   "column_break_epzg",
   "start_date",
   "rent_agreement",
-  "approval_details_section",
-  "approved_by",
-  "column_break_pgss",
-  "approved_at",
   "rent_status_section",
   "pay_status",
   "column_break_fuou",
@@ -133,26 +129,6 @@
    "label": "Rent Agreement"
   },
   {
-   "fieldname": "approval_details_section",
-   "fieldtype": "Section Break",
-   "label": "Approval Details"
-  },
-  {
-   "fieldname": "approved_by",
-   "fieldtype": "Link",
-   "label": "Approved By",
-   "options": "User"
-  },
-  {
-   "fieldname": "column_break_pgss",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "approved_at",
-   "fieldtype": "Date",
-   "label": "Approved At"
-  },
-  {
    "fieldname": "rent_status_section",
    "fieldtype": "Section Break",
    "label": "Rent Status"
@@ -210,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-03 15:41:34.310793",
+ "modified": "2025-02-03 15:43:56.470978",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Rent Application KA",
