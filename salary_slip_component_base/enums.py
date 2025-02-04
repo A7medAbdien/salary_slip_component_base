@@ -18,3 +18,21 @@ class ApplicationsStatus(Enum):
     CANCELLED = "Cancelled"
     PAID = "Paid"
     UNPAIED = "Unpaid"
+
+
+class VehicleOwnershipType(Enum):
+    RENTED = "Rental"
+    LTO = "LTO"
+
+
+class VehicleStatus(Enum):
+    SERVICED = "Serviced"
+    NOTIFIED = "Notified"
+    UPCOMING = "Upcoming"
+    UNCHECKED = "Unchecked"
+
+
+class AvailabilityStatus(Enum):
+    ON_ROAD = "On Road"
+    IN_GARAGE = "In Garage"
+    AVAILABLE = "Available"

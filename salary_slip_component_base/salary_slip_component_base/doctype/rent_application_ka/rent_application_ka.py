@@ -12,7 +12,7 @@ from frappe.utils import (
     add_to_date,
     get_link_to_form,
 )
-from salary_slip_component_base.enums import ApplicationsStatus, PaymentScheduleStatus, PaymentType
+from salary_slip_component_base.enums import ApplicationsStatus, AvailabilityStatus, PaymentScheduleStatus, PaymentType
 from salary_slip_component_base.utils.date import get_first_date
 from salary_slip_component_base.utils.validation import is_empty
 
@@ -26,10 +26,8 @@ class RentApplicationKA(Document):
         self.remove_from_vehicle_rent_applicaiton_history()
         self.clear_active_vehicle_and_employee()
 
-    def on_cancel(self):
-        self.remove_payment_schedules()
-        self.remove_from_rider_rent_applicaiton_history()
-        self.remove_from_vehicle_rent_applicaiton_history()
+    def before_cancel(self):
+        self.pay()
         self.clear_active_vehicle_and_employee()
 
     def before_insert(self):
@@ -153,6 +151,16 @@ class RentApplicationKA(Document):
                             "pay_status", PaymentScheduleStatus.UNPAYED.value)
         frappe.db.set_value("Rent Application KA", self.name,
                             "workflow_state", ApplicationsStatus.UNPAIED.value)
+        rrahs = frappe.get_all("Rider Rent Application History KA",
+                               filters={"rent_app": self.name},)
+        for rrah in rrahs:
+            frappe.db.set_value("Rider Rent Application History KA", rrah.name,
+                                "end_date", today())
+        rrahs = frappe.get_all("Vehicle Rent Application History KA",
+                               filters={"rent_app": self.name},)
+        for rrah in rrahs:
+            frappe.db.set_value("Vehicle Rent Application History KA", rrah.name,
+                                "end_date", today())
 
         self.clear_active_vehicle_and_employee()
         # NOTE: this should never happens,
@@ -189,6 +197,10 @@ class RentApplicationKA(Document):
         can_close = True
         for ps in self.payment_schedules:
             if ps.status == PaymentScheduleStatus.UNPAYED.value:
+                frappe.msgprint(
+                    "You cannot close {} Rent Application until all Payment \
+                    Schedules are paid".format(
+                        get_link_to_form("Rent Application KA", self.name)))
                 can_close = False
                 break
         return can_close
@@ -213,7 +225,7 @@ class RentApplicationKA(Document):
                 get_link_to_form("Vehicle KA", vehicle.name),
             )
         )
-        self.update_activce_vehicle_and_employee(vehicle.name)
+        self.update_activce_vehicle_and_employee()
         frappe.msgprint("New Rent Application Created Successfully, {}".format(
             get_link_to_form("Rent Application KA", new_rent_app.name)
         ))
@@ -262,10 +274,15 @@ class RentApplicationKA(Document):
 
     def clear_active_vehicle_and_employee(self):
         emp = frappe.get_doc("Employee", self.emp)
-        emp.custom_vehicle = None
+        emp.custom_vehicle = ""
         emp.save()
         vehicle = frappe.get_doc("Vehicle KA", self.vehicle)
-        vehicle.rider = None
+        vehicle.rider = ""
+        vehicle.rider_name = ""
+        vehicle.whatsapp_number = ""
+        vehicle.phone_number = ""
+        if vehicle.availability_status != AvailabilityStatus.IN_GARAGE.value:
+            vehicle.availability_status = AvailabilityStatus.AVAILABLE.value
         vehicle.save()
 
     def update_activce_vehicle_and_employee(self):
@@ -274,4 +291,30 @@ class RentApplicationKA(Document):
         emp.custom_vehicle = vehicle.name
         emp.save()
         vehicle.rider = emp.name
+        vehicle.rider_name = emp.employee_name
+        vehicle.whatsapp_number = emp.custom_whatsapp_number
+        vehicle.phone_number = emp.cell_number
+        vehicle.availability_status = AvailabilityStatus.ON_ROAD.value
         vehicle.save()
+
+    def pay(self):
+        _today = getdate(today())
+        for ps in self.payment_schedules:
+            if ps.status == PaymentScheduleStatus.UNPAYED.value:
+                ps.status = PaymentScheduleStatus.PAID.value
+                ps.payment_type = PaymentType.MANUAL.value
+                ps.recorded_by = frappe.session.user
+                ps.paid_at = _today
+        self.pay_status = PaymentScheduleStatus.PAID.value
+        self.is_active = False
+        self.end_date = _today
+        rrahs = frappe.get_all("Rider Rent Application History KA",
+                               filters={"rent_app": self.name},)
+        for rrah in rrahs:
+            frappe.db.set_value("Rider Rent Application History KA", rrah.name,
+                                "end_date", _today)
+        rrahs = frappe.get_all("Vehicle Rent Application History KA",
+                               filters={"rent_app": self.name},)
+        for rrah in rrahs:
+            frappe.db.set_value("Vehicle Rent Application History KA", rrah.name,
+                                "end_date", _today)
