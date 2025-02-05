@@ -54,7 +54,7 @@ def get_rent_payments(doc):
                 "parenttype": "Salary Slip",
                 "parentfield": "custom_rent_repayment",
                 "rent_app": ps.rent_app,
-                "rent_payemnt_schedule": ps.name,
+                "rent_payment_schedule": ps.name,
                 "salary_slip": doc.name,
                 "start_date": ps.start_date,
                 "end_date": ps.end_date,
@@ -95,31 +95,30 @@ def delete_custom_rent_repayment(doc):
 
 def update_rent_payment_schedules_unpaid(doc):
     for ps in doc.custom_rent_repayment:
+        frappe.msgprint("custom rent repayment, ps, unpay")
         ps.rent_app = ""
         rent_payment_schedule = frappe.get_doc(
-            "Rent Payment Schedule KA", ps.rent_payemnt_schedule)
+            "Rent Payment Schedule KA", ps.rent_payment_schedule)
         rent_payment_schedule.status = PaymentScheduleStatus.UNPAYED.value
         rent_payment_schedule.payment_type = PaymentType.SALARY.value
         rent_payment_schedule.deducted_from = ""
         rent_payment_schedule.paid_at = ""
         rent_payment_schedule.save()
-        frappe.db.set_value("Rent Application KA", rent_payment_schedule.parent,
-                            "pay_status", PaymentScheduleStatus.UNPAYED.value)
+        rent_app = frappe.get_doc("Rent Application KA", rent_payment_schedule.parent)
+        rent_app.unpay([])
 
 
 def update_rent_payment_schedules_paid(doc):
     for ps in doc.custom_rent_repayment:
+        frappe.msgprint("custom rent repayment, ps")
         rent_payment_schedule = frappe.get_doc(
-            "Rent Payment Schedule KA", ps.rent_payemnt_schedule)
+            "Rent Payment Schedule KA", ps.rent_payment_schedule)
         rent_payment_schedule.status = PaymentScheduleStatus.PAID.value
         rent_payment_schedule.payment_type = PaymentType.SALARY.value
         rent_payment_schedule.deducted_from = doc.name
         rent_payment_schedule.paid_at = now()
         rent_payment_schedule.save()
         # check all rent payment schedules in rent app if are paid
-        rent_app = frappe.get_doc("Rent Application KA", ps.rent_app)
-        for rent_app_ps in rent_app.payment_schedules:
-            if rent_app_ps.status == PaymentScheduleStatus.UNPAYED.value:
-                continue
-        frappe.db.set_value("Rent Application KA", ps.rent_app,
-                            "pay_status", PaymentScheduleStatus.PAID.value)
+        rent_app = frappe.get_doc("Rent Application KA", rent_payment_schedule.parent)
+        if rent_app.is_all_payment_schedules_paid():
+            rent_app.pay()

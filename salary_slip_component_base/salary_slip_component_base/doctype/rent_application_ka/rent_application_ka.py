@@ -58,7 +58,6 @@ class RentApplicationKA(Document):
         self.pay_status = PaymentScheduleStatus.UNPAYED.value
 
     def on_update(self):
-        self.remove_payment_schedules()
         self.create_payment_schedules()
         self.reload()
 
@@ -70,6 +69,7 @@ class RentApplicationKA(Document):
 
     def create_payment_schedules(self):
         self.remove_payment_schedules()
+        self.payment_schedules = []
         today_date = getdate(today())
         start_date = getdate(self.start_date)
         number_of_months = month_diff(today_date, start_date)
@@ -141,7 +141,7 @@ class RentApplicationKA(Document):
         if self.workflow_state == PaymentScheduleStatus.PAID.value or \
                 self.workflow_state == PaymentScheduleStatus.UNPAYED.value:
             frappe.throw(
-                "You cannot close an already Paied or Unpaid Rent Application"
+                "You cannot close an already Pied or Unpaid Rent Application"
             )
 
         frappe.db.set_value("Rent Application KA",
@@ -170,7 +170,7 @@ class RentApplicationKA(Document):
         which means that the schedule that creates a new payment schedule
         already ran and created a new payment schedule for February
         """
-        if self.is_all_payment_schedules_paied():
+        if self.is_all_payment_schedules_paid():
             frappe.msgprint(title="Warning", msg="Please review KA Admin,\
             All Payment Schedules are already paid, and this should not happens")
             frappe.db.set_value("Rent Application KA", self.name,
@@ -184,7 +184,7 @@ class RentApplicationKA(Document):
         if self.is_active:
             frappe.throw("You cannot close an active Rent Application")
 
-        if self.is_all_payment_schedules_paied():
+        if self.is_all_payment_schedules_paid():
             frappe.db.set_value("Rent Application KA", self.name,
                                 "pay_status", PaymentScheduleStatus.PAID.value)
             frappe.db.set_value("Rent Application KA", self.name,
@@ -194,7 +194,7 @@ class RentApplicationKA(Document):
                 "You cannot close this Rent Application \
                 until all Payment Schedules are paid")
 
-    def is_all_payment_schedules_paied(self):
+    def is_all_payment_schedules_paid(self):
         can_close = True
         for ps in self.payment_schedules:
             if ps.status == PaymentScheduleStatus.UNPAYED.value:
@@ -298,7 +298,35 @@ class RentApplicationKA(Document):
         vehicle.availability_status = AvailabilityStatus.ON_ROAD.value
         vehicle.save()
 
+    def unpay(self, pss_to_unpay):
+        if self.pay_status != PaymentScheduleStatus.PAID.value:
+            return
+        for ps in pss_to_unpay:
+            if ps.status == PaymentScheduleStatus.PAID.value:
+                ps.status = PaymentScheduleStatus.UNPAYED.value
+                ps.payment_type = PaymentType.SALARY.value
+                ps.deducted_from = ""
+                ps.recorded_by = ""
+                ps.paid_at = ""
+        frappe.db.set_value("Rent Application KA", self.name,
+                            "pay_status", PaymentScheduleStatus.UNPAYED.value)
+        frappe.db.set_value("Rent Application KA", self.name, "is_active", 1)
+        frappe.db.set_value("Rent Application KA",
+                            self.name, "end_date", None)
+        rrahs = frappe.get_all("Rider Rent Application History KA",
+                               filters={"rent_app": self.name},)
+        for rrah in rrahs:
+            frappe.db.set_value("Rider Rent Application History KA", rrah.name,
+                                "end_date", None)
+        rrahs = frappe.get_all("Vehicle Rent Application History KA",
+                               filters={"rent_app": self.name},)
+        for rrah in rrahs:
+            frappe.db.set_value("Vehicle Rent Application History KA", rrah.name,
+                                "end_date", None)
+
     def pay(self):
+        if self.pay_status == PaymentScheduleStatus.PAID.value:
+            return
         _today = getdate(today())
         for ps in self.payment_schedules:
             if ps.status == PaymentScheduleStatus.UNPAYED.value:
@@ -306,9 +334,11 @@ class RentApplicationKA(Document):
                 ps.payment_type = PaymentType.MANUAL.value
                 ps.recorded_by = frappe.session.user
                 ps.paid_at = _today
-        self.pay_status = PaymentScheduleStatus.PAID.value
-        self.is_active = False
-        self.end_date = _today
+        frappe.db.set_value("Rent Application KA", self.name,
+                            "pay_status", PaymentScheduleStatus.PAID.value)
+        frappe.db.set_value("Rent Application KA", self.name, "is_active", 0)
+        frappe.db.set_value("Rent Application KA",
+                            self.name, "end_date", _today)
         rrahs = frappe.get_all("Rider Rent Application History KA",
                                filters={"rent_app": self.name},)
         for rrah in rrahs:

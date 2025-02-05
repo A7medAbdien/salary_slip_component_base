@@ -16,22 +16,24 @@ from salary_slip_component_base.events.salary_slip_events.custom_loan_repayment 
 
 
 def on_trash(doc, event):
-    if doc.custom_loan_repayment and doc.custom_rent_repayment:
-        delete_custom_loan_repayment(doc)
-        delete_custom_rent_repayment(doc)
+    delete_custom_loan_repayment(doc)
+    delete_custom_rent_repayment(doc)
 
 
 def before_cancel(doc, event):
-    if doc.custom_loan_repayment and doc.custom_rent_repayment:
-        update_loan_payment_schedules_unpaid(doc)
-        delete_custom_loan_repayment(doc)
-        update_rent_payment_schedules_unpaid(doc)
-        delete_custom_rent_repayment(doc)
+    reverse_update_emp_balance(doc)
+    update_loan_payment_schedules_unpaid(doc)
+    update_rent_payment_schedules_unpaid(doc)
+    delete_custom_loan_repayment(doc)
+    delete_custom_rent_repayment(doc)
 
 
 def on_submit(doc, event):
-    update_loan_payment_schedules_paid(doc)
-    update_rent_payment_schedules_paid(doc)
+    if doc.custom_loan_repayment:
+        update_loan_payment_schedules_paid(doc)
+    if doc.custom_rent_repayment:
+        frappe.msgprint("custom rent repayment")
+        update_rent_payment_schedules_paid(doc)
 
 
 def on_update(doc, event):
@@ -41,6 +43,7 @@ def on_update(doc, event):
     get_loan_payments(doc)
     get_rent_payments(doc)
     calculate_component_amount_based_on_custom_base(doc)
+    update_emp_balance(doc)
     doc.save()
 
 
@@ -66,7 +69,34 @@ def calculate_component_amount_based_on_custom_base(doc):
 
         sd.amount = flt(sd.custom_component_base_rate *
                         sd.custom_component_base, precision=3)
-
     doc.set_totals()
     # print(doc.as_dict())
     # print("\n\n\nI ran MF\n\n\n")
+
+
+def reverse_update_emp_balance(doc):
+    emp = frappe.get_doc("Employee", doc.employee)
+    if not emp.custom_balance:
+        balance = 0
+    else:
+        balance = emp.custom_balance
+    if (doc.net_pay < 0):
+        balance -= doc.net_pay
+    elif (doc.net_pay > 0) and (balance < 0):
+        balance -= doc.net_pay
+    emp.custom_balance = balance
+    emp.save()
+
+
+def update_emp_balance(doc):
+    emp = frappe.get_doc("Employee", doc.employee)
+    if not emp.custom_balance:
+        balance = 0
+    else:
+        balance = emp.custom_balance
+    if (doc.net_pay < 0):
+        balance += doc.net_pay
+    elif (doc.net_pay > 0) and (balance < 0):
+        balance += doc.net_pay
+    emp.custom_balance = balance
+    emp.save()

@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "rent_app",
-  "rent_payemnt_schedule",
+  "rent_payment_schedule",
   "salary_slip",
   "start_date",
   "end_date",
@@ -20,22 +20,13 @@
    "fieldname": "salary_slip",
    "fieldtype": "Link",
    "label": "Salary Slip",
-   "options": "Salary Slip",
-   "reqd": 1
+   "options": "Salary Slip"
   },
   {
    "fieldname": "rent_app",
    "fieldtype": "Link",
    "label": "Rent Application",
-   "options": "Rent Application KA",
-   "reqd": 1
-  },
-  {
-   "fieldname": "rent_payemnt_schedule",
-   "fieldtype": "Link",
-   "label": "Rent Payment Schedule",
-   "options": "Rent Payment Schedule KA",
-   "reqd": 1
+   "options": "Rent Application KA"
   },
   {
    "fetch_from": "rent_payemnt_schedule.start_date",
@@ -77,12 +68,18 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Pay Per Day"
+  },
+  {
+   "fieldname": "rent_payment_schedule",
+   "fieldtype": "Link",
+   "label": "Rent Payment Schedule",
+   "options": "Rent Payment Schedule KA"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-29 11:45:05.157229",
+ "modified": "2025-02-05 17:54:38.173326",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Salary Slip Rent Payment Schedule KA",
