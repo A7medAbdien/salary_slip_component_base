@@ -58,6 +58,7 @@ class RentApplicationKA(Document):
         self.pay_status = PaymentScheduleStatus.UNPAYED.value
 
     def on_update(self):
+        self.remove_payment_schedules()
         self.create_payment_schedules()
         self.reload()
 
