@@ -1,0 +1,48 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Payroll Settings KA",
+  "modified": "2025-02-06 19:10:47.822274",
+  "name": "Payroll Settings KA",
+  "negative_payroll_payable_accounts": [
+   {
+    "company": "Test (Demo)",
+    "is_active": 1,
+    "negative_account": "Payroll Payable - TD",
+    "parent": "Payroll Settings KA",
+    "parentfield": "negative_payroll_payable_accounts",
+    "parenttype": "Payroll Settings KA"
+   }
+  ],
+  "table_jsvz": [
+   {
+    "company": "Test (Demo)",
+    "is_active": 1,
+    "parent": "Payroll Settings KA",
+    "parentfield": "table_jsvz",
+    "parenttype": "Payroll Settings KA",
+    "salary_component": "Loan Deduction"
+   }
+  ],
+  "table_lgyt": [
+   {
+    "company": "Test (Demo)",
+    "is_active": 1,
+    "parent": "Payroll Settings KA",
+    "parentfield": "table_lgyt",
+    "parenttype": "Payroll Settings KA",
+    "salary_component": "Previous Balance"
+   }
+  ],
+  "table_ncch": [
+   {
+    "company": "Test (Demo)",
+    "is_active": 1,
+    "parent": "Payroll Settings KA",
+    "parentfield": "table_ncch",
+    "parenttype": "Payroll Settings KA",
+    "salary_component": "Rent Deduction"
+   }
+  ]
+ }
+]

@@ -10,7 +10,9 @@
   "loan_payroll_salary_component_section",
   "table_jsvz",
   "rent_payroll_salary_comonent_section",
-  "table_ncch"
+  "table_ncch",
+  "previous_balance_salary_component_section",
+  "table_lgyt"
  ],
  "fields": [
   {
@@ -44,12 +46,22 @@
    "fieldname": "table_ncch",
    "fieldtype": "Table",
    "options": "Rent Salary Component KA"
+  },
+  {
+   "fieldname": "previous_balance_salary_component_section",
+   "fieldtype": "Section Break",
+   "label": "Previous Balance Salary Component"
+  },
+  {
+   "fieldname": "table_lgyt",
+   "fieldtype": "Table",
+   "options": "PB Salary Component KA"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-28 17:54:20.188071",
+ "modified": "2025-02-06 19:07:47.955373",
  "modified_by": "Administrator",
  "module": "Salary Slip Component Base",
  "name": "Payroll Settings KA",
