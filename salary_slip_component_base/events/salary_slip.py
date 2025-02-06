@@ -1,6 +1,6 @@
 import frappe
-from frappe.utils import (flt)
-from salary_slip_component_base.enums import PaymentScheduleStatus, PaymentType
+from frappe.utils import (flt, now)
+from salary_slip_component_base.enums import BalanceAdjustmentType
 from salary_slip_component_base.events.salary_slip_events.custom_rent_repayment import (
     get_rent_payments,
     delete_custom_rent_repayment,
@@ -90,13 +90,30 @@ def reverse_update_emp_balance(doc):
 
 def update_emp_balance(doc):
     emp = frappe.get_doc("Employee", doc.employee)
+    # read balance
     if not emp.custom_balance:
         balance = 0
     else:
         balance = emp.custom_balance
-    if (doc.net_pay < 0):
-        balance += doc.net_pay
-    elif (doc.net_pay > 0) and (balance < 0):
-        balance += doc.net_pay
-    emp.custom_balance = balance
+    # only update if balance is negative or net_pay is negative
+    if (emp.custom_balance >= 0 and doc.net_pay > 0) or doc.net_pay == 0:
+        return
+    # edit balance
+    new_balance = balance + doc.net_pay
+    emp.custom_balance = new_balance
     emp.save()
+    # create a record
+    balance_adj = frappe.get_doc({
+        "doctype": "Balance Adjustments KA",
+        "parent": emp.name,
+        "parenttype": "Employee",
+        "parentfield": "custom_balance_adjustments",
+        "adj_type": BalanceAdjustmentType.SALARY.value,
+        "recorded_from": doc.name,
+        "recorded_at": now(),
+        "balance_before": balance,
+        "balance_adj": doc.net_pay,
+        "balance_after": new_balance,
+    })
+    balance_adj.insert()
+    frappe.msgprint("Balance Adjustments Created")

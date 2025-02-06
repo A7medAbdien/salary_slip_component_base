@@ -6,6 +6,11 @@ class PaymentType(Enum):
     SALARY = "Salary Deduction"
 
 
+class BalanceAdjustmentType(Enum):
+    MANUAL = "Manual"
+    SALARY = "Salary Slip"
+
+
 class PaymentScheduleStatus(Enum):
     PAID = "Paid"
     UNPAYED = "Unpaid"
