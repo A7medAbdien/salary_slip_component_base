@@ -26,7 +26,7 @@ class RentApplicationKA(Document):
         self.remove_from_vehicle_rent_applicaiton_history()
         self.clear_active_vehicle_and_employee()
 
-    def before_cancel(self):
+    def on_cancel(self):
         self.pay()
         self.clear_active_vehicle_and_employee()
 
