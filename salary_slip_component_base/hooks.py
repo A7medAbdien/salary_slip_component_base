@@ -26,9 +26,11 @@ PayrollEntry.submit_salary_slips = custom_submit_salary_slips
 PayrollEntry.get_salary_slip_details = custom_get_salary_slip_details
 
 fixtures = [
-    {"dt": "Workflow" },
-    {"dt": "Payroll Settings KA" },
-    {"dt": "Salary Component", "filters": {"custom_is_calculated_on_salary_slip": 1}},
+    {"dt": "Workflow"},
+    {"dt": "Salary Structure", "filters": {"name": "Template"}},
+    {"dt": "Payroll Settings KA"},
+    {"dt": "Salary Component", "filters": {
+        "custom_is_calculated_on_salary_slip": 1}},
 ]
 # Apps
 # ------------------
