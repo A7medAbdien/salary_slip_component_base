@@ -2,6 +2,7 @@ import frappe
 from frappe.utils import (
     now,
     get_last_day,
+    add_to_date,
 )
 from salary_slip_component_base.enums import PaymentScheduleStatus, PaymentType
 
@@ -9,7 +10,8 @@ from salary_slip_component_base.enums import PaymentScheduleStatus, PaymentType
 def get_rent_payments(doc):
     clean_custom_rent_repayment(doc)
     emp = doc.employee
-    date = get_last_day(doc.posting_date)
+    date = get_last_day(add_to_date(doc.posting_date, months=-1))
+    print("Collecting rent for dates before {}".format(date))
     company = doc.company
     rent_salary_component = get_rent_salary_component(company)
     if not rent_salary_component:
@@ -103,7 +105,8 @@ def update_rent_payment_schedules_unpaid(doc):
         rent_payment_schedule.deducted_from = ""
         rent_payment_schedule.paid_at = ""
         rent_payment_schedule.save()
-        rent_app = frappe.get_doc("Rent Application KA", rent_payment_schedule.parent)
+        rent_app = frappe.get_doc(
+            "Rent Application KA", rent_payment_schedule.parent)
         rent_app.unpay([])
 
 
@@ -117,6 +120,7 @@ def update_rent_payment_schedules_paid(doc):
         rent_payment_schedule.paid_at = now()
         rent_payment_schedule.save()
         # check all rent payment schedules in rent app if are paid
-        rent_app = frappe.get_doc("Rent Application KA", rent_payment_schedule.parent)
+        rent_app = frappe.get_doc(
+            "Rent Application KA", rent_payment_schedule.parent)
         if rent_app.is_all_payment_schedules_paid():
             rent_app.pay()

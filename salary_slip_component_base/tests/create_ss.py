@@ -84,7 +84,7 @@ def test_ss(test):
     for d in ss.deductions + ss.earnings:
         ssd = frappe.get_doc("Salary Detail", d.name)
         if ssd.salary_component == "Rent Deduction":
-            test.assertEqual(ssd.amount, 400, "Rent Deduction is not 400")
+            test.assertEqual(ssd.amount, 200, "Rent Deduction is not 200")
         if ssd.salary_component == "Previous Balance":
             test.assertEqual(ssd.amount, -100, "Previous Balance is not 100")
             print("Previous Balance {}".format(ssd.amount))
