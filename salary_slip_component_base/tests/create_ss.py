@@ -39,7 +39,7 @@ class TestCreateSS(unittest.TestCase):
             "doctype": "Rent Application KA",
             "emp": self.emp,
             "vehicle": self.vehicle,
-            "start_date": getdate("26-01-2025"),
+            "start_date": getdate("01-01-2025"),
         }).insert()
 
         self.emp_grade = frappe.get_doc({
@@ -53,6 +53,8 @@ class TestCreateSS(unittest.TestCase):
     def test_cast_rent(self):
         test_submit_rent(self)
         test_sstruc_assignment(self)
+        test_ss(self)
+        test_cancel_ss(self)
         test_cancel_assign(self)
         test_cancel_rent(self)
 
@@ -66,6 +68,41 @@ class TestCreateSS(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         frappe.db.rollback()
+
+
+def test_ss(test):
+    print("------------Create Salary Slip------------")
+    ss = frappe.get_doc({
+        "doctype": "Salary Slip",
+        "employee": test.emp.name,
+        "posting_date": getdate("20-02-2025"),
+    })
+    ss.insert()
+    ss = frappe.get_doc("Salary Slip", ss.name)
+    test.ss = ss
+    for d in ss.deductions:
+        ssd = frappe.get_doc("Salary Detail", d.name)
+        if ssd.salary_component == "Rent Deduction":
+            test.assertEqual(ssd.amount, 400, "Rent Deduction is not 400")
+
+    ss.submit()
+    ss = frappe.get_doc("Salary Slip", ss.name)
+    test.assertEqual(ss.docstatus, 1, "Salary Slip is not submitted")
+
+
+def test_cancel_ss(test):
+    print("------------Cancel Salary Slip------------")
+    ss = frappe.get_doc("Salary Slip", test.ss.name)
+    ss.ignore_doctypes_on_cancel_all = ["Rent Application KA", "Employee"]
+    ss.save()
+    ss = frappe.get_doc("Salary Slip", test.ss.name, forece=True)
+
+    frappe.delete_doc("Salary Slip", test.ss.name)
+    try:
+        ss = frappe.get_doc("Salary Slip", test.ss.name)
+    except frappe.DoesNotExistError:
+        ss = None
+    test.assertIsNone(ss, "Salary Slip is not deleted")
 
 
 def test_sstruc_assignment(test):
@@ -107,7 +144,7 @@ def test_sstruc_assignment(test):
 
 
 def test_cancel_assign(test):
-    print("------------Cancel Assign------------")
+    print("---------Cancel Assign Salary Structure---------")
     sstruct_ass = frappe.get_doc(
         "Salary Structure Assignment", test.sstruc_ass.name)
     sstruct_ass.cancel()
