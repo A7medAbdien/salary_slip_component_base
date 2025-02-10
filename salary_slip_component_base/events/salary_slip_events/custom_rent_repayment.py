@@ -95,7 +95,6 @@ def delete_custom_rent_repayment(doc):
 
 def update_rent_payment_schedules_unpaid(doc):
     for ps in doc.custom_rent_repayment:
-        frappe.msgprint("custom rent repayment, ps, unpay")
         ps.rent_app = ""
         rent_payment_schedule = frappe.get_doc(
             "Rent Payment Schedule KA", ps.rent_payment_schedule)
@@ -110,7 +109,6 @@ def update_rent_payment_schedules_unpaid(doc):
 
 def update_rent_payment_schedules_paid(doc):
     for ps in doc.custom_rent_repayment:
-        frappe.msgprint("custom rent repayment, ps")
         rent_payment_schedule = frappe.get_doc(
             "Rent Payment Schedule KA", ps.rent_payment_schedule)
         rent_payment_schedule.status = PaymentScheduleStatus.PAID.value

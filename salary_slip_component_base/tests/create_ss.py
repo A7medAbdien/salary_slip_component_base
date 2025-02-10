@@ -21,6 +21,7 @@ class TestCreateSS(unittest.TestCase):
             "date_of_joining": getdate("01-01-2024"),
             "date_of_birth": getdate("01-01-1990"),
             "status": "Active",
+            "custom_balance": -100,
             "department": "Riders - TD",
             "company": "Test (Demo)",
         }).insert()
@@ -80,10 +81,13 @@ def test_ss(test):
     ss.insert()
     ss = frappe.get_doc("Salary Slip", ss.name)
     test.ss = ss
-    for d in ss.deductions:
+    for d in ss.deductions + ss.earnings:
         ssd = frappe.get_doc("Salary Detail", d.name)
         if ssd.salary_component == "Rent Deduction":
             test.assertEqual(ssd.amount, 400, "Rent Deduction is not 400")
+        if ssd.salary_component == "Previous Balance":
+            test.assertEqual(ssd.amount, -100, "Previous Balance is not 100")
+            print("Previous Balance {}".format(ssd.amount))
 
     ss.submit()
     ss = frappe.get_doc("Salary Slip", ss.name)
@@ -95,9 +99,8 @@ def test_cancel_ss(test):
     ss = frappe.get_doc("Salary Slip", test.ss.name)
     ss.ignore_doctypes_on_cancel_all = ["Rent Application KA", "Employee"]
     ss.save()
-    ss = frappe.get_doc("Salary Slip", test.ss.name, forece=True)
-
-    frappe.delete_doc("Salary Slip", test.ss.name)
+    ss = frappe.get_doc("Salary Slip", test.ss.name)
+    frappe.delete_doc("Salary Slip", test.ss.name, force=1, for_reload=True)
     try:
         ss = frappe.get_doc("Salary Slip", test.ss.name)
     except frappe.DoesNotExistError:

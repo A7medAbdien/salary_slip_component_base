@@ -1,6 +1,7 @@
 import frappe
 from frappe.utils import (flt, now)
 from salary_slip_component_base.enums import BalanceAdjustmentType
+from salary_slip_component_base.events.salary_slip_events.custom_BP_repayment import set_pb_on_salary_slip
 from salary_slip_component_base.events.salary_slip_events.custom_rent_repayment import (
     get_rent_payments,
     delete_custom_rent_repayment,
@@ -32,8 +33,8 @@ def on_submit(doc, event):
     if doc.custom_loan_repayment:
         update_loan_payment_schedules_paid(doc)
     if doc.custom_rent_repayment:
-        frappe.msgprint("custom rent repayment")
         update_rent_payment_schedules_paid(doc)
+    update_emp_balance(doc)
 
 
 def on_update(doc, event):
@@ -42,8 +43,8 @@ def on_update(doc, event):
     doc._on_update_handled = True
     get_loan_payments(doc)
     get_rent_payments(doc)
+    set_pb_on_salary_slip(doc)
     calculate_component_amount_based_on_custom_base(doc)
-    update_emp_balance(doc)
     doc.save()
 
 
